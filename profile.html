@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyFlow - Профиль</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body id="profile-page">
+    <div class="dashboard-container">
+        <header class="mobile-header">
+            <button class="mobile-menu-btn">☰</button>
+            <h1 class="logo" style="margin: 0; font-size: 1.5rem;">StudyFlow</h1>
+            <div style="width: 40px;"></div>
+        </header>
+        <nav class="sidebar">
+            <h1 class="logo">StudyFlow</h1>
+            <ul>
+                <li><a href="dashboard.html">Главная</a></li>
+                <li><a href="goals.html">Цели</a></li>
+                <li><a href="analytics.html">Аналитика</a></li>
+                <li><a href="calendar.html">Календарь</a></li>
+                <li><a href="achievements.html">Достижения</a></li>
+                <li><a href="profile.html" class="active">Профиль</a></li>
+            </ul>
+            <div class="theme-switcher">
+                <h4>Сменить тему</h4>
+                <div class="theme-buttons">
+                    <button data-set-theme="default" class="theme-btn purple"></button>
+                    <button data-set-theme="blue" class="theme-btn blue"></button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div id="notification" class="alert" style="display: none;"></div>
+            <div class="card profile-header">
+                <div class="profile-info">
+                    <h3 id="user-name">Загрузка...</h3>
+                    <p id="user-comment">Загрузка...</p>
+                    <button id="edit-profile-btn" class="btn btn-edit-profile">Редактировать профиль</button>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Стрик обучения</h2>
+                <div class="streak-visual" id="streak-container"></div>
+                <div class="streak-summary">
+                    <p>Дней подряд: <span id="streak-days">0</span></p>
+                    <p>Всего дней обучения: <span id="total-days">0</span></p>
+                </div>
+            </div>
+            <div class="card contacts-card">
+                <h2>Контакты</h2>
+                <div class="contact-display">
+                    <div class="contact-item-display"><span class="contact-icon-display">@</span><span class="contact-text" id="contact-email">нет данных</span></div>
+                    <div class="contact-item-display"><span class="contact-icon-display">TG</span><span class="contact-text" id="contact-telegram">нет данных</span></div>
+                    <div class="contact-item-display"><span class="contact-icon-display">VK</span><span class="contact-text" id="contact-vk">нет данных</span></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" id="close-modal">×</button>
+            <div class="modal-header"><h2>Редактирование</h2></div>
+            <form id="edit-profile-form" class="modal-form">
+                <div class="form-group"><label for="edit-name">ФИО</label><input type="text" id="edit-name" placeholder="Имя Фамилия" required></div>
+                <div class="form-group"><label for="edit-description">Описание</label><textarea id="edit-description" placeholder="Расскажите о себе"></textarea></div>
+                <div class="form-group"><label>Контакты</label><div class="contact-items"><div class="contact-item"><span class="contact-icon">@</span><input type="email" id="edit-email" placeholder="Email"></div><div class="contact-item"><span class="contact-icon">TG</span><input type="text" id="edit-telegram" placeholder="Telegram username"></div><div class="contact-item"><span class="contact-icon">VK</span><input type="text" id="edit-vk" placeholder="VK ссылка"></div></div></div>
+                <div class="modal-actions"><button type="button" id="cancel-edit-btn" class="btn btn-secondary">Отмена</button><button type="submit" id="save-profile-btn" class="btn btn-primary">Сохранить</button></div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyFlow - Цели</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body id="goals-page">
+    <div class="dashboard-container">
+        <header class="mobile-header">
+            <button class="mobile-menu-btn">☰</button>
+            <h1 class="logo" style="margin: 0; font-size: 1.5rem;">StudyFlow</h1>
+            <div style="width: 40px;"></div>
+        </header>
+        <nav class="sidebar">
+            <h1 class="logo">StudyFlow</h1>
+            <ul>
+                <li><a href="dashboard.html">Главная</a></li>
+                <li><a href="goals.html" class="active">Цели</a></li>
+                <li><a href="analytics.html">Аналитика</a></li>
+                <li><a href="calendar.html">Календарь</a></li>
+                <li><a href="achievements.html">Достижения</a></li>
+                <li><a href="profile.html">Профиль</a></li>
+            </ul>
+            <div class="theme-switcher">
+                <h4>Сменить тему</h4>
+                <div class="theme-buttons">
+                    <button data-set-theme="default" class="theme-btn purple"></button>
+                    <button data-set-theme="blue" class="theme-btn blue"></button>
+                </div>
+            </div>
+        </nav>
+        <main class="main-content">
+            <div class="top-section">
+                <div class="card new-goal-card"><h2>Новая цель</h2><div class="form-buttons"><button class="btn-secondary">Дедлайн</button><button class="btn-primary" onclick="showgoalDialog()">Создать</button></div></div>
+                <div class="card tips-card"><h2>Советы</h2><div class="tip-content"><span>Упал - вставай...</span></div><div class="pagination"><span>&larr;</span><span>1/n</span><span>&rarr;</span></div></div>
+            </div>
+            <div class="all-goals-section"><h2>Все цели</h2><div class="goals-list"><!-- Список целей будет генерироваться JS --></div></div>
+        </main>
+    </div>
+    <div class="goaldialog">
+        <dialog id="new-goal-modal" class="goaldialog">
+            <!-- Содержимое сложного модального окна -->
+        </dialog>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/goals.js"></script>
+</body>
+</html>
