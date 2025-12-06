@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyFlow - Вход</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <!-- Подключаем единый файл стилей -->
+    <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/charts.css">
+</head>
+<body id="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2>Вход в StudyFlow</h2>
+            <div id="notificationArea"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Логин" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Пароль" required autocomplete="current-password">
+                </div>
+                <div class="loading" id="loadingIndicator">
+                    <p>Выполняется вход...</p>
+                </div>
+                <button type="submit" class="btn btn-primary" id="loginButton">
+                    Войти
+                </button>
+            </form>
+            <div class="secondary-action">
+                <p>Нет аккаунта? <a href="register.html">Зарегистрироваться</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подключаем скрипты в конце -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/login.js"></script> <!-- Предполагаем, что логика входа будет в отдельном файле -->
+</body>
+</html>
