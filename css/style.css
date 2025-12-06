@@ -6,7 +6,7 @@
     --bg-light: #f3f4f8;
     --text-dark: #333333;
     --text-light: #ffffff;
-    --font-family: 'Nunito', sans-serif; /* Возвращаем старый шрифт */
+    --font-family: 'Nunito', sans-serif;
     --other-month-color: #b0b0b0;
     --sidebar-bg: #7484d2;
     --card-bg: #a9baf0;
@@ -17,13 +17,14 @@
     --goal-indicator: #e53e3e;
     --icon-color: #4f5b93;
     --selected-border: #3b82f6;
+    --mobile-header-height: 60px; /* Добавлено для мобильной версии */
 }
 
 /* СИНЯЯ ТЕМА С СЕРЕБРИСТЫМ ФОНОМ И СИНИМИ БЛОКАМИ */
 body[data-theme="blue"] {
     --bg-light: #c0c0c0; /* Серебристый фон */
     --sidebar-bg: #4169E1; /* Синий sidebar */
-    --card-bg: #4169E1; /* Синие блоки (как в оригинале) */
+    --card-bg: #4169E1; /* Синие блоки */
     --nav-item-bg: #4682B4; /* Синие навигационные элементы */
     --nav-item-active-bg: #3b5974; /* Темно-синий активный элемент */
     --progress-bar-fill: #228B22; /* Зеленая полоса прогресса */
@@ -35,129 +36,116 @@ body[data-theme="blue"] {
     --other-month-color: #666666; /* Серый для других месяцев */
 }
 
-/* Обновляем цвета текста для синей темы */
+/* Обновляем цвета текста для синей темы - ФИКС СЛИЯНИЯ */
 body[data-theme="blue"] .card,
 body[data-theme="blue"] .progress-card,
 body[data-theme="blue"] .streak-card,
 body[data-theme="blue"] .calendar-card,
 body[data-theme="blue"] .main-goal,
 body[data-theme="blue"] #achievements-page .achievements-container,
-body[data-theme="blue"] #profile-page .card {
-    color: var(--text-light); /* Белый текст на синих блоках */
+body[data-theme="blue"] #profile-page .card,
+body[data-theme="blue"] .card h2,
+body[data-theme="blue"] .card h3,
+body[data-theme="blue"] .card p,
+body[data-theme="blue"] .card span,
+body[data-theme="blue"] .card div {
+    color: var(--text-dark) !important; /* Черный текст на всех блоках */
 }
 
-body[data-theme="blue"] .date,
-body[data-theme="blue"] .day-header,
-body[data-theme="blue"] .weekday {
-    color: var(--text-light); /* Белый текст для заголовков */
+/* Явно задаем черный текст для основных элементов в синей теме */
+body[data-theme="blue"] .main-content,
+body[data-theme="blue"] .main-content * {
+    color: var(--text-dark);
 }
 
-/* Для progress-item делаем белый фон и черный текст */
-body[data-theme="blue"] .progress-item {
-    background-color: #ffffff; /* Белый фон */
-    color: #000000; /* Черный текст */
+/* Для карточек с белым фоном в синей теме */
+body[data-theme="blue"] .progress-item,
+body[data-theme="blue"] #goals-page .new-goal-card,
+body[data-theme="blue"] #goals-page .goal-item,
+body[data-theme="blue"] .achievement-card,
+body[data-theme="blue"] #analytics-page .card,
+body[data-theme="blue"] #analytics-page .stat-item,
+body[data-theme="blue"] #analytics-page .chart-item,
+body[data-theme="blue"] .modal-content,
+body[data-theme="blue"] #profile-page .profile-info p,
+body[data-theme="blue"] #profile-page .contact-item-display {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #e0e0e0;
+}
+
+/* Для текста внутри этих карточек */
+body[data-theme="blue"] .progress-item *,
+body[data-theme="blue"] #goals-page .new-goal-card *,
+body[data-theme="blue"] #goals-page .goal-item *,
+body[data-theme="blue"] .achievement-card *,
+body[data-theme="blue"] #analytics-page .card *,
+body[data-theme="blue"] .modal-content * {
+    color: #000000 !important;
+}
+
+/* Исключения - где нужен белый текст */
+body[data-theme="blue"] .sidebar,
+body[data-theme="blue"] .sidebar *,
+body[data-theme="blue"] .mobile-header,
+body[data-theme="blue"] .mobile-header * {
+    color: var(--text-light) !important;
 }
 
 /* Для статистики и аналитики */
-body[data-theme="blue"] #analytics-page .card,
 body[data-theme="blue"] #analytics-page .chart-header h3,
 body[data-theme="blue"] .stat-label,
 body[data-theme="blue"] .chart-loading {
-    color: #000000; /* Черный текст */
-}
-
-body[data-theme="blue"] #analytics-page .chart-item {
-    background-color: #ffffff; /* Белый фон для графиков */
+    color: #000000;
 }
 
 /* Для целей */
-body[data-theme="blue"] #goals-page .new-goal-card,
-body[data-theme="blue"] #goals-page .goal-item {
-    background-color: #ffffff; /* Белый фон */
-    color: #000000; /* Черный текст */
+body[data-theme="blue"] #goals-page .goal-item p {
+    color: #555555;
 }
 
-/* Для достижений */
-body[data-theme="blue"] .achievement-card {
-    background-color: #ffffff; /* Белый фон */
-    color: #000000; /* Черный текст */
-}
-
-/* Для календаря */
+/* Для календаря - оставляем белый текст на синем фоне */
 body[data-theme="blue"] #calendar-page .calendar-container {
-    background-color: var(--card-bg); /* Синий фон для календаря */
-    color: var(--text-light); /* Белый текст */
+    background-color: var(--card-bg);
+    color: var(--text-light);
+}
+
+body[data-theme="blue"] #calendar-page .calendar-container * {
+    color: var(--text-light);
 }
 
 body[data-theme="blue"] #calendar-page .weekday {
-    color: #eeeeee; /* Светло-серый для дней недели */
+    color: #eeeeee;
 }
 
 body[data-theme="blue"] #calendar-page .day-cell {
-    background-color: rgba(255, 255, 255, 0.2); /* Полупрозрачный белый */
-    color: var(--text-light); /* Белый текст */
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-light);
 }
 
 body[data-theme="blue"] #calendar-page .day-cell:hover:not(.empty) {
-    background-color: rgba(255, 255, 255, 0.3); /* Немного темнее при наведении */
+    background-color: rgba(255, 255, 255, 0.3);
 }
 
 body[data-theme="blue"] #calendar-page .day-cell.current-day {
-    background-color: #3b82f6; /* Более яркий синий для текущего дня */
+    background-color: #3b82f6;
     color: var(--text-light);
 }
 
 /* Для модальных окон */
-body[data-theme="blue"] .modal-content {
-    background-color: #ffffff; /* Белый фон */
-    color: #000000; /* Черный текст */
-}
-
 body[data-theme="blue"] .modal-header h3 {
-    color: #000000; /* Черный заголовок */
+    color: #000000;
 }
 
 body[data-theme="blue"] .modal-body textarea {
-    background-color: #f8f9fa; /* Светло-серый фон */
-    color: #000000; /* Черный текст */
+    background-color: #f8f9fa;
+    color: #000000;
     border: 1px solid #ced4da;
 }
 
 /* Для профиля */
-body[data-theme="blue"] #profile-page .profile-info p {
-    background-color: #ffffff; /* Белый фон */
-    color: #000000; /* Черный текст */
-}
-
-body[data-theme="blue"] #profile-page .contact-item-display {
-    background-color: #ffffff; /* Белый фон */
-}
-
 body[data-theme="blue"] #profile-page .contact-text {
-    color: #000000; /* Черный текст */
-}
-
-/* Белый текст только для sidebar (как и раньше) */
-body[data-theme="blue"] .sidebar,
-body[data-theme="blue"] .sidebar ul li a,
-body[data-theme="blue"] .sidebar .logo,
-body[data-theme="blue"] .theme-switcher h4 {
-    color: var(--text-light);
-}
-
-/* Для мобильного заголовка */
-body[data-theme="blue"] .mobile-header {
-    background-color: var(--sidebar-bg);
-    color: var(--text-light);
-}
-
-/* Дополнительные корректировки для лучшей читаемости */
-body[data-theme="blue"] .progress-item .item-info span:first-child {
-    color: var(--nav-item-active-bg); /* Темно-синий для заголовков прогресса */
-}
-
-body[data-theme="blue"] #goals-page .goal-item p {
-    color: #555555; /* Темно-серый для описания целей */
+    color: #000000;
 }
 
 /* Для стрелок календаря */
@@ -166,7 +154,7 @@ body[data-theme="blue"] .calendar-header button {
     color: var(--text-light);
 }
 
-/* Для кнопок сохранения/удаления */
+/* Для кнопок */
 body[data-theme="blue"] .btn-save {
     background-color: var(--nav-item-active-bg);
     color: var(--text-light);
@@ -177,238 +165,1348 @@ body[data-theme="blue"] .btn-delete {
     color: var(--text-light);
 }
 
-/* Остальные существующие стили остаются без изменений... */
 /* ==========================================================================
    2. ОБЩАЯ СТРУКТУРА
    ========================================================================== */
 
-.dashboard-container { display: flex; min-height: 100vh; }
-.main-content { flex-grow: 1; padding: 2rem; }
+.dashboard-container { 
+    display: flex; 
+    min-height: 100vh; 
+}
 
-#dashboard-page .main-content { display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: auto auto 1fr; gap: 2rem; align-items: start; }
-#goals-page .main-content, #analytics-page .main-content, #achievements-page .main-content, #profile-page .main-content { display: flex; flex-direction: column; gap: 2rem; }
-#calendar-page .main-content { display: flex; justify-content: center; align-items: flex-start; }
+.main-content { 
+    flex-grow: 1; 
+    padding: 2rem; 
+    transition: margin-top 0.3s ease; /* Добавлено для плавности */
+}
+
+#dashboard-page .main-content { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    grid-template-rows: auto auto 1fr; 
+    gap: 2rem; 
+    align-items: start; 
+}
+
+#goals-page .main-content, 
+#analytics-page .main-content, 
+#achievements-page .main-content, 
+#profile-page .main-content { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 2rem; 
+}
+
+#calendar-page .main-content { 
+    display: flex; 
+    justify-content: center; 
+    align-items: flex-start; 
+}
 
 /* ==========================================================================
-   3. БОКОВАЯ ПАНЕЛЬ (SIDEBAR)
+   3. БОКОВАЯ ПАНЕЛЬ (SIDEBAR) - ИСПРАВЛЕНА НАКЛАДКА
    ========================================================================== */
 
-.sidebar { background-color: var(--sidebar-bg); padding: 2rem 1.5rem; width: 250px; flex-shrink: 0; color: var(--text-light); box-sizing: border-box; display: flex; flex-direction: column; transition: background-color 0.3s, left 0.3s ease; }
-.logo { font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 3rem; }
-.sidebar ul { list-style: none; }
-.sidebar ul li a { display: block; padding: 1rem 1.5rem; margin-bottom: 1rem; border-radius: 12px; text-decoration: none; color: var(--text-light); background-color: var(--nav-item-bg); font-weight: 700; transition: background-color 0.3s ease; }
-.sidebar ul li a.active { background-color: var(--nav-item-active-bg); }
-.theme-switcher { margin-top: auto; padding-top: 2rem; }
-.theme-switcher h4 { text-align: center; margin-bottom: 0.5rem; }
-.theme-buttons { display: flex; justify-content: center; gap: 1rem; }
-.theme-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid white; cursor: pointer; }
-.theme-btn.purple { background-color: #7484d2; }
-.theme-btn.blue { background-color: #4169E1; }
+.sidebar { 
+    background-color: var(--sidebar-bg); 
+    padding: 2rem 1.5rem; 
+    width: 250px; 
+    flex-shrink: 0; 
+    color: var(--text-light); 
+    box-sizing: border-box; 
+    display: flex; 
+    flex-direction: column; 
+    transition: transform 0.3s ease, background-color 0.3s; 
+    position: fixed; /* Изменено на fixed */
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000; /* Увеличено значение z-index */
+    overflow-y: auto;
+}
+
+/* Для десктопа - показываем обычным образом */
+@media (min-width: 769px) {
+    .sidebar {
+        position: relative; /* Возвращаем relative для десктопа */
+        height: auto;
+    }
+    
+    .dashboard-container {
+        padding-top: 0;
+    }
+}
+
+.logo { 
+    font-size: 2rem; 
+    font-weight: 800; 
+    text-align: center; 
+    margin-bottom: 3rem; 
+}
+
+.sidebar ul { 
+    list-style: none; 
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li a { 
+    display: block; 
+    padding: 1rem 1.5rem; 
+    margin-bottom: 1rem; 
+    border-radius: 12px; 
+    text-decoration: none; 
+    color: var(--text-light); 
+    background-color: var(--nav-item-bg); 
+    font-weight: 700; 
+    transition: background-color 0.3s ease; 
+}
+
+.sidebar ul li a.active { 
+    background-color: var(--nav-item-active-bg); 
+}
+
+.theme-switcher { 
+    margin-top: auto; 
+    padding-top: 2rem; 
+}
+
+.theme-switcher h4 { 
+    text-align: center; 
+    margin-bottom: 0.5rem; 
+}
+
+.theme-buttons { 
+    display: flex; 
+    justify-content: center; 
+    gap: 1rem; 
+}
+
+.theme-btn { 
+    width: 30px; 
+    height: 30px; 
+    border-radius: 50%; 
+    border: 2px solid white; 
+    cursor: pointer; 
+    transition: transform 0.2s;
+}
+
+.theme-btn:hover {
+    transform: scale(1.1);
+}
+
+.theme-btn.purple { 
+    background-color: #7484d2; 
+}
+
+.theme-btn.blue { 
+    background-color: #4169E1; 
+}
 
 /* ==========================================================================
    4. СТРАНИЦЫ АУТЕНТИФИКАЦИИ
    ========================================================================== */
 
-#auth-page .auth-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1rem; }
-#auth-page .auth-card { background-color: #ffffff; color: #333333; border-radius: 20px; padding: 2rem 2.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-#auth-page .auth-card h2 { margin-top: 0; margin-bottom: 2rem; font-size: 2rem; font-weight: 800; color: var(--nav-item-active-bg); }
-#auth-page .form-group { margin-bottom: 1.5rem; text-align: left; }
-#auth-page .form-group input { width: 100%; padding: 0.8rem 1rem; border: 2px solid #e0e0e0; background-color: var(--bg-light); box-sizing: border-box; font-family: var(--font-family); font-size: 1rem; border-radius: 12px; }
-#auth-page .btn { display: block; width: 100%; padding: 0.9rem; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
-#auth-page .btn-primary { background-color: var(--sidebar-bg); color: var(--text-light); }
-#auth-page .secondary-action { margin-top: 1.5rem; font-size: 0.9rem; }
-#auth-page .secondary-action a { color: var(--sidebar-bg); font-weight: 700; text-decoration: none; }
-#auth-page .notification { padding: 12px; margin: 10px 0; border-radius: 8px; font-weight: 600; text-align: left; }
-#auth-page .notification.error { background-color: #fee; border: 1px solid #fcc; color: #c33; }
-#auth-page .notification.success { background-color: #efe; border: 1px solid #cfc; color: #3c3; }
-#auth-page .loading { display: none; text-align: center; margin: 10px 0; color: #666; }
-#auth-page .loading.show { display: block; }
+#auth-page .auth-container { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    padding: 1rem; 
+}
+
+#auth-page .auth-card { 
+    background-color: #ffffff; 
+    color: #333333; 
+    border-radius: 20px; 
+    padding: 2rem 2.5rem; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+    width: 100%; 
+    max-width: 400px; 
+    text-align: center; 
+}
+
+#auth-page .auth-card h2 { 
+    margin-top: 0; 
+    margin-bottom: 2rem; 
+    font-size: 2rem; 
+    font-weight: 800; 
+    color: var(--nav-item-active-bg); 
+}
+
+#auth-page .form-group { 
+    margin-bottom: 1.5rem; 
+    text-align: left; 
+}
+
+#auth-page .form-group input { 
+    width: 100%; 
+    padding: 0.8rem 1rem; 
+    border: 2px solid #e0e0e0; 
+    background-color: var(--bg-light); 
+    box-sizing: border-box; 
+    font-family: var(--font-family); 
+    font-size: 1rem; 
+    border-radius: 12px; 
+}
+
+#auth-page .btn { 
+    display: block; 
+    width: 100%; 
+    padding: 0.9rem; 
+    border: none; 
+    border-radius: 12px; 
+    font-size: 1.1rem; 
+    font-weight: 700; 
+    cursor: pointer; 
+}
+
+#auth-page .btn-primary { 
+    background-color: var(--sidebar-bg); 
+    color: var(--text-light); 
+}
+
+#auth-page .secondary-action { 
+    margin-top: 1.5rem; 
+    font-size: 0.9rem; 
+}
+
+#auth-page .secondary-action a { 
+    color: var(--sidebar-bg); 
+    font-weight: 700; 
+    text-decoration: none; 
+}
+
+#auth-page .notification { 
+    padding: 12px; 
+    margin: 10px 0; 
+    border-radius: 8px; 
+    font-weight: 600; 
+    text-align: left; 
+}
+
+#auth-page .notification.error { 
+    background-color: #fee; 
+    border: 1px solid #fcc; 
+    color: #c33; 
+}
+
+#auth-page .notification.success { 
+    background-color: #efe; 
+    border: 1px solid #cfc; 
+    color: #3c3; 
+}
+
+#auth-page .loading { 
+    display: none; 
+    text-align: center; 
+    margin: 10px 0; 
+    color: #666; 
+}
+
+#auth-page .loading.show { 
+    display: block; 
+}
 
 /* ==========================================================================
    5. ОБЩИЕ КОМПОНЕНТЫ
    ========================================================================== */
 
-.card { border-radius: 20px; padding: 1.5rem; box-sizing: border-box; background-color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: background-color 0.3s, color 0.3s; }
-.card h2 { margin-top: 0; font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem; }
-.progress-bar-container { background-color: #f0f0f0; border-radius: 999px; height: 12px; width: 100%; overflow: hidden; }
-.progress-bar { background-color: var(--progress-bar-fill); height: 100%; border-radius: 999px; transition: background-color .3s; }
-.alert { padding: 1rem; border-radius: 10px; margin-bottom: 1rem; }
-.alert-success { background-color: #34d399; color: white; }
-.alert-error { background-color: #ef4444; color: white; }
+.card { 
+    border-radius: 20px; 
+    padding: 1.5rem; 
+    box-sizing: border-box; 
+    background-color: #ffffff; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+    transition: background-color 0.3s, color 0.3s; 
+}
+
+.card h2 { 
+    margin-top: 0; 
+    font-size: 1.5rem; 
+    font-weight: 800; 
+    margin-bottom: 1.5rem; 
+}
+
+.progress-bar-container { 
+    background-color: #f0f0f0; 
+    border-radius: 999px; 
+    height: 12px; 
+    width: 100%; 
+    overflow: hidden; 
+}
+
+.progress-bar { 
+    background-color: var(--progress-bar-fill); 
+    height: 100%; 
+    border-radius: 999px; 
+    transition: background-color .3s; 
+}
+
+.alert { 
+    padding: 1rem; 
+    border-radius: 10px; 
+    margin-bottom: 1rem; 
+}
+
+.alert-success { 
+    background-color: #34d399; 
+    color: white; 
+}
+
+.alert-error { 
+    background-color: #ef4444; 
+    color: white; 
+}
 
 /* ==========================================================================
    6. СТИЛИ ДЛЯ КОНКРЕТНЫХ СТРАНИЦ
    ========================================================================== */
 
 /* --- СТРАНИЦА: DASHBOARD --- */
-#dashboard-page .main-goal { grid-column: 1 / -1; background-color: var(--card-bg); }
-#dashboard-page .progress-card { background-color: var(--card-bg); padding: 1.5rem; border-radius: 20px; grid-row: 2 / 4; grid-column: 1 / 2; }
-#dashboard-page .progress-card h2 { text-align: left; }
-#dashboard-page .progress-item { background-color: #ffffff; border-radius: 15px; padding: 1rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-#dashboard-page .progress-item:last-child { margin-bottom: 0; }
-#dashboard-page .progress-item .item-info { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.75rem; font-weight: 700; }
-#dashboard-page .progress-item .item-info span:first-child { color: var(--nav-item-active-bg); }
-#dashboard-page .streak-card { background-color: var(--card-bg); grid-column: 2 / 3; grid-row: 2 / 3; }
-#dashboard-page .streak-days { display: flex; gap: 0.5rem; margin-bottom: 1rem; justify-content: space-between; }
-#dashboard-page .day-cell { flex: 1; aspect-ratio: 1 / 1; display: flex; justify-content: center; align-items: center; border-radius: 8px; background-color: rgba(255, 255, 255, 0.5); font-size: 0.8rem; font-weight: 700; }
-#dashboard-page .day-cell.filled { background-color: var(--progress-bar-fill); color: var(--text-light); }
-#dashboard-page .streak-card p { margin: 0.5rem 0; text-align: center; font-weight: 700; }
-#dashboard-page .calendar-card { background-color: var(--card-bg); grid-column: 2 / 3; grid-row: 3 / 4; }
-#dashboard-page .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-#dashboard-page .calendar-header h3 { margin: 0; font-size: 1.2rem; }
-#dashboard-page .calendar-header button { background-color: var(--nav-item-bg); border: none; color: var(--text-light); font-size: 1.2rem; font-weight: bold; border-radius: 8px; width: 35px; height: 35px; cursor: pointer; }
-#dashboard-page .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; }
-#dashboard-page .day-header { text-align: center; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.8rem; }
-#dashboard-page .calendar-day { position: relative; background-color: rgba(255, 255, 255, 0.5); border-radius: 8px; aspect-ratio: 1 / 1; display: flex; justify-content: center; align-items: center; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
-#dashboard-page .calendar-day.empty { background-color: transparent; cursor: default; }
-#dashboard-page .calendar-day.current-day { background-color: var(--current-day-bg); color: var(--text-light); }
-#dashboard-page .calendar-day.has-goal::after { content: ''; position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background-color: var(--goal-indicator); border-radius: 50%; }
+#dashboard-page .main-goal { 
+    grid-column: 1 / -1; 
+    background-color: var(--card-bg); 
+}
+
+#dashboard-page .progress-card { 
+    background-color: var(--card-bg); 
+    padding: 1.5rem; 
+    border-radius: 20px; 
+    grid-row: 2 / 4; 
+    grid-column: 1 / 2; 
+}
+
+#dashboard-page .progress-card h2 { 
+    text-align: left; 
+}
+
+#dashboard-page .progress-item { 
+    background-color: #ffffff; 
+    border-radius: 15px; 
+    padding: 1rem 1.5rem; 
+    margin-bottom: 1rem; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+}
+
+#dashboard-page .progress-item:last-child { 
+    margin-bottom: 0; 
+}
+
+#dashboard-page .progress-item .item-info { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: baseline; 
+    margin-bottom: 0.75rem; 
+    font-weight: 700; 
+}
+
+#dashboard-page .progress-item .item-info span:first-child { 
+    color: var(--nav-item-active-bg); 
+}
+
+#dashboard-page .streak-card { 
+    background-color: var(--card-bg); 
+    grid-column: 2 / 3; 
+    grid-row: 2 / 3; 
+}
+
+#dashboard-page .streak-days { 
+    display: flex; 
+    gap: 0.5rem; 
+    margin-bottom: 1rem; 
+    justify-content: space-between; 
+}
+
+#dashboard-page .day-cell { 
+    flex: 1; 
+    aspect-ratio: 1 / 1; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    border-radius: 8px; 
+    background-color: rgba(255, 255, 255, 0.5); 
+    font-size: 0.8rem; 
+    font-weight: 700; 
+}
+
+#dashboard-page .day-cell.filled { 
+    background-color: var(--progress-bar-fill); 
+    color: var(--text-light); 
+}
+
+#dashboard-page .streak-card p { 
+    margin: 0.5rem 0; 
+    text-align: center; 
+    font-weight: 700; 
+}
+
+#dashboard-page .calendar-card { 
+    background-color: var(--card-bg); 
+    grid-column: 2 / 3; 
+    grid-row: 3 / 4; 
+}
+
+#dashboard-page .calendar-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 1rem; 
+}
+
+#dashboard-page .calendar-header h3 { 
+    margin: 0; 
+    font-size: 1.2rem; 
+}
+
+#dashboard-page .calendar-header button { 
+    background-color: var(--nav-item-bg); 
+    border: none; 
+    color: var(--text-light); 
+    font-size: 1.2rem; 
+    font-weight: bold; 
+    border-radius: 8px; 
+    width: 35px; 
+    height: 35px; 
+    cursor: pointer; 
+}
+
+#dashboard-page .calendar-grid { 
+    display: grid; 
+    grid-template-columns: repeat(7, 1fr); 
+    gap: 0.5rem; 
+}
+
+#dashboard-page .day-header { 
+    text-align: center; 
+    font-weight: 700; 
+    margin-bottom: 0.5rem; 
+    font-size: 0.8rem; 
+}
+
+#dashboard-page .calendar-day { 
+    position: relative; 
+    background-color: rgba(255, 255, 255, 0.5); 
+    border-radius: 8px; 
+    aspect-ratio: 1 / 1; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    font-weight: 700; 
+    font-size: 0.8rem; 
+    cursor: pointer; 
+}
+
+#dashboard-page .calendar-day.empty { 
+    background-color: transparent; 
+    cursor: default; 
+}
+
+#dashboard-page .calendar-day.current-day { 
+    background-color: var(--current-day-bg); 
+    color: var(--text-light); 
+}
+
+#dashboard-page .calendar-day.has-goal::after { 
+    content: ''; 
+    position: absolute; 
+    bottom: 10%; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: 6px; 
+    height: 6px; 
+    background-color: var(--goal-indicator); 
+    border-radius: 50%; 
+}
 
 /* --- СТРАНИЦА: ЦЕЛИ --- */
-#goals-page .top-section { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
-#goals-page .new-goal-card { background-color: #ffffff; color: #333; }
-#goals-page .all-goals-section { color: #333; }
-#goals-page .goal-item { color: #333; }
-#goals-page .form-group textarea { min-height: 80px; resize: vertical; }
-#goals-page .form-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; }
-#goals-page .form-buttons button { flex: 1; }
-#goals-page .tips-card { background-color: var(--card-bg); display: flex; flex-direction: column; }
-#goals-page .tip-content { flex-grow: 1; display: flex; justify-content: center; align-items: center; background-color: rgba(255, 255, 255, 0.5); margin-bottom: 1rem; border-radius: 12px; font-weight: 700; padding: 1rem; }
-#goals-page .tip-content span { white-space: pre-wrap; line-height: 1.6; text-align: center; }
-#goals-page .pagination { display: flex; justify-content: space-between; gap: 0.5rem; }
-#goals-page .pagination span { flex: 1; text-align: center; padding: 0.5rem; background-color: rgba(255, 255, 255, 0.5); border-radius: 8px; font-weight: 700; }
-#goals-page .all-goals-section h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem; }
-#goals-page .goals-list { display: flex; flex-direction: column; gap: 1rem; }
-#goals-page .goal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: .5rem;}
-#goals-page .goal-header h3 { margin: 0; font-size: 1.2rem; }
-#goals-page .goal-deadline { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
-#goals-page .goal-deadline input[type="checkbox"] { width: 18px; height: 18px; }
-#goals-page .goal-item p { margin: 0 0 1rem 0; color: #555; }
-#goals-page .goaldialog { margin:auto; background:white; width: 80%; max-width: 600px; border: 0; border-radius:15px; padding: 0; }
-#goals-page dialog::backdrop { background-color:rgba(0,0,0,0.5); }
-#goals-page .goaldialog header { font-family: var(--font-family); background:linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 15px 15px 0 0; }
-#goals-page .dialogclosebutton { position:absolute; padding: 5px; top: 15px; right:15px; font-size:15px; width:30px; height:30px; display:flex; border-radius:50%; align-items:center; justify-content:center; background: none; border:none; cursor: pointer;}
+#goals-page .top-section { 
+    display: grid; 
+    grid-template-columns: 2fr 1fr; 
+    gap: 2rem; 
+}
+
+#goals-page .new-goal-card { 
+    background-color: #ffffff; 
+    color: #333; 
+}
+
+#goals-page .all-goals-section { 
+    color: #333; 
+}
+
+#goals-page .goal-item { 
+    color: #333; 
+}
+
+#goals-page .form-group textarea { 
+    min-height: 80px; 
+    resize: vertical; 
+}
+
+#goals-page .form-buttons { 
+    display: flex; 
+    gap: 1rem; 
+    margin-top: 1.5rem; 
+}
+
+#goals-page .form-buttons button { 
+    flex: 1; 
+}
+
+#goals-page .tips-card { 
+    background-color: var(--card-bg); 
+    display: flex; 
+    flex-direction: column; 
+}
+
+#goals-page .tip-content { 
+    flex-grow: 1; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    background-color: rgba(255, 255, 255, 0.5); 
+    margin-bottom: 1rem; 
+    border-radius: 12px; 
+    font-weight: 700; 
+    padding: 1rem; 
+}
+
+#goals-page .tip-content span { 
+    white-space: pre-wrap; 
+    line-height: 1.6; 
+    text-align: center; 
+}
+
+#goals-page .pagination { 
+    display: flex; 
+    justify-content: space-between; 
+    gap: 0.5rem; 
+}
+
+#goals-page .pagination span { 
+    flex: 1; 
+    text-align: center; 
+    padding: 0.5rem; 
+    background-color: rgba(255, 255, 255, 0.5); 
+    border-radius: 8px; 
+    font-weight: 700; 
+}
+
+#goals-page .all-goals-section h2 { 
+    font-size: 1.5rem; 
+    font-weight: 800; 
+    margin-bottom: 1.5rem; 
+}
+
+#goals-page .goals-list { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 1rem; 
+}
+
+#goals-page .goal-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 0.5rem; 
+    flex-wrap: wrap; 
+    gap: .5rem;
+}
+
+#goals-page .goal-header h3 { 
+    margin: 0; 
+    font-size: 1.2rem; 
+}
+
+#goals-page .goal-deadline { 
+    display: flex; 
+    align-items: center; 
+    gap: 0.5rem; 
+    font-size: 0.9rem; 
+}
+
+#goals-page .goal-deadline input[type="checkbox"] { 
+    width: 18px; 
+    height: 18px; 
+}
+
+#goals-page .goal-item p { 
+    margin: 0 0 1rem 0; 
+    color: #555; 
+}
+
+#goals-page .goaldialog { 
+    margin: auto; 
+    background: white; 
+    width: 80%; 
+    max-width: 600px; 
+    border: 0; 
+    border-radius: 15px; 
+    padding: 0; 
+}
+
+#goals-page dialog::backdrop { 
+    background-color: rgba(0,0,0,0.5); 
+}
+
+#goals-page .goaldialog header { 
+    font-family: var(--font-family); 
+    background: linear-gradient(135deg, #667eea, #764ba2); 
+    color: white; 
+    padding: 20px; 
+    border-radius: 15px 15px 0 0; 
+}
+
+#goals-page .dialogclosebutton { 
+    position: absolute; 
+    padding: 5px; 
+    top: 15px; 
+    right: 15px; 
+    font-size: 15px; 
+    width: 30px; 
+    height: 30px; 
+    display: flex; 
+    border-radius: 50%; 
+    align-items: center; 
+    justify-content: center; 
+    background: none; 
+    border: none; 
+    cursor: pointer;
+}
 
 /* --- СТРАНИЦА: АНАЛИТИКА --- */
-#analytics-page .card { background-color: #ffffff; }
-#analytics-page .charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
-#analytics-page .chart-item { background-color: var(--bg-light); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; min-height: 260px; border: 1px solid #e1e4e8; }
-#analytics-page .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
-#analytics-page .chart-header h3 { margin: 0; font-size: 1.2rem; font-weight: 800; color: #333; }
-#analytics-page .filter-select { padding: 8px 12px; border: 1px solid #d0d7de; border-radius: 8px; background: #fff; font-size: 14px; font-weight: 700; color: #1a1a1a; cursor: pointer; }
-#analytics-page .chart-container { flex: 1; min-height: 200px; display: flex; align-items: center; justify-content: center; }
-#analytics-page .chart-loading { color: #666; font-size: 14px; }
-#analytics-page .stats-card { margin-bottom: 2rem; }
-#analytics-page .stats-header { margin-bottom: 1.5rem; }
-#analytics-page .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
-#analytics-page .stat-item { text-align: center; padding: 1.5rem 1rem; background: var(--bg-light); border-radius: 12px; border: 1px solid #e1e4e8; }
-#analytics-page .stat-value { font-size: 2.2rem; font-weight: 800; color: #3182ce; margin-bottom: 0.5rem; }
-#analytics-page .stat-label { font-size: 0.95rem; font-weight: 700; color: #666; text-transform: uppercase; }
+#analytics-page .card { 
+    background-color: #ffffff; 
+}
+
+#analytics-page .charts-grid { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 1.2rem; 
+}
+
+#analytics-page .chart-item { 
+    background-color: var(--bg-light); 
+    border-radius: 12px; 
+    padding: 1rem; 
+    display: flex; 
+    flex-direction: column; 
+    min-height: 260px; 
+    border: 1px solid #e1e4e8; 
+}
+
+#analytics-page .chart-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 0.8rem; 
+}
+
+#analytics-page .chart-header h3 { 
+    margin: 0; 
+    font-size: 1.2rem; 
+    font-weight: 800; 
+    color: #333; 
+}
+
+#analytics-page .filter-select { 
+    padding: 8px 12px; 
+    border: 1px solid #d0d7de; 
+    border-radius: 8px; 
+    background: #fff; 
+    font-size: 14px; 
+    font-weight: 700; 
+    color: #1a1a1a; 
+    cursor: pointer; 
+}
+
+#analytics-page .chart-container { 
+    flex: 1; 
+    min-height: 200px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+
+#analytics-page .chart-loading { 
+    color: #666; 
+    font-size: 14px; 
+}
+
+#analytics-page .stats-card { 
+    margin-bottom: 2rem; 
+}
+
+#analytics-page .stats-header { 
+    margin-bottom: 1.5rem; 
+}
+
+#analytics-page .stats-grid { 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 1.5rem; 
+}
+
+#analytics-page .stat-item { 
+    text-align: center; 
+    padding: 1.5rem 1rem; 
+    background: var(--bg-light); 
+    border-radius: 12px; 
+    border: 1px solid #e1e4e8; 
+}
+
+#analytics-page .stat-value { 
+    font-size: 2.2rem; 
+    font-weight: 800; 
+    color: #3182ce; 
+    margin-bottom: 0.5rem; 
+}
+
+#analytics-page .stat-label { 
+    font-size: 0.95rem; 
+    font-weight: 700; 
+    color: #666; 
+    text-transform: uppercase; 
+}
 
 /* --- СТРАНИЦА: КАЛЕНДАРЬ --- */
-#calendar-page .calendar-container { width: 100%; max-width: 900px; background-color: #ffffff; color: #333; border-radius: 20px; padding: 2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-#calendar-page .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-#calendar-page .calendar-header h2 { margin: 0; font-size: 1.5rem; }
-#calendar-page .calendar-header button { background-color: var(--nav-item-bg); border: none; color: var(--text-light); font-size: 1.5rem; border-radius: 12px; width: 45px; height: 45px; cursor: pointer; }
-#calendar-page .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1rem; }
-#calendar-page .weekday { text-align: center; font-weight: 700; color: #888; margin-bottom: 0.5rem; }
-#calendar-page .day-cell { position: relative; background-color: var(--bg-light); border-radius: 12px; aspect-ratio: 1 / 1; display: flex; justify-content: center; align-items: center; font-weight: 700; }
-#calendar-page .day-cell:not(.empty):hover { background-color: #e2e8f0; cursor: pointer; }
-#calendar-page .day-cell.empty { background-color: transparent; cursor: default; }
-#calendar-page .day-cell.current-day { background-color: var(--current-day-bg); color: var(--text-light); }
-#calendar-page .day-cell.has-goal::after { content: ''; position: absolute; bottom: 15%; width: 8px; height: 8px; background-color: var(--goal-indicator); border-radius: 50%; }
+#calendar-page .calendar-container { 
+    width: 100%; 
+    max-width: 900px; 
+    background-color: #ffffff; 
+    color: #333; 
+    border-radius: 20px; 
+    padding: 2rem; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+}
+
+#calendar-page .calendar-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 2rem; 
+}
+
+#calendar-page .calendar-header h2 { 
+    margin: 0; 
+    font-size: 1.5rem; 
+}
+
+#calendar-page .calendar-header button { 
+    background-color: var(--nav-item-bg); 
+    border: none; 
+    color: var(--text-light); 
+    font-size: 1.5rem; 
+    border-radius: 12px; 
+    width: 45px; 
+    height: 45px; 
+    cursor: pointer; 
+}
+
+#calendar-page .calendar-grid { 
+    display: grid; 
+    grid-template-columns: repeat(7, 1fr); 
+    gap: 1rem; 
+}
+
+#calendar-page .weekday { 
+    text-align: center; 
+    font-weight: 700; 
+    color: #888; 
+    margin-bottom: 0.5rem; 
+}
+
+#calendar-page .day-cell { 
+    position: relative; 
+    background-color: var(--bg-light); 
+    border-radius: 12px; 
+    aspect-ratio: 1 / 1; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    font-weight: 700; 
+}
+
+#calendar-page .day-cell:not(.empty):hover { 
+    background-color: #e2e8f0; 
+    cursor: pointer; 
+}
+
+#calendar-page .day-cell.empty { 
+    background-color: transparent; 
+    cursor: default; 
+}
+
+#calendar-page .day-cell.current-day { 
+    background-color: var(--current-day-bg); 
+    color: var(--text-light); 
+}
+
+#calendar-page .day-cell.has-goal::after { 
+    content: ''; 
+    position: absolute; 
+    bottom: 15%; 
+    width: 8px; 
+    height: 8px; 
+    background-color: var(--goal-indicator); 
+    border-radius: 50%; 
+}
 
 /* --- СТРАНИЦА: ДОСТИЖЕНИЯ --- */
-#achievements-page .achievements-container { background-color: var(--card-bg); }
-#achievements-page .achievements-header { background-color: var(--nav-item-bg); padding: 1rem; border-radius: 15px; text-align: center; margin-bottom: 2rem; }
-#achievements-page .achievements-header h2 { margin: 0; font-size: 1.8rem; }
-#achievements-page .achievements-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1.5rem; }
-#achievements-page .achievement-card { background-color: var(--bg-light); border-radius: 15px; padding: 1rem; text-align: center; transition: transform 0.2s; color: #333; }
-#achievements-page .achievement-card:hover { transform: translateY(-5px); }
-#achievements-page .achievement-card .icon { width: 60px; height: 60px; margin: 0 auto 1rem; color: var(--icon-color); }
-#achievements-page .achievement-card .icon.special { width: 80px; height: 80px; background-color: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; padding: 10px; margin-top: -10px; }
-#achievements-page .achievement-card .icon.special svg { width: 50px; height: 50px; }
-#achievements-page .achievement-card h3 { margin: 0 0 0.5rem 0; font-size: 1rem; }
-#achievements-page .achievement-card p { margin: 0; font-size: 0.85rem; color: #555; }
+#achievements-page .achievements-container { 
+    background-color: var(--card-bg); 
+}
+
+#achievements-page .achievements-header { 
+    background-color: var(--nav-item-bg); 
+    padding: 1rem; 
+    border-radius: 15px; 
+    text-align: center; 
+    margin-bottom: 2rem; 
+}
+
+#achievements-page .achievements-header h2 { 
+    margin: 0; 
+    font-size: 1.8rem; 
+}
+
+#achievements-page .achievements-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+    gap: 1.5rem; 
+}
+
+#achievements-page .achievement-card { 
+    background-color: var(--bg-light); 
+    border-radius: 15px; 
+    padding: 1rem; 
+    text-align: center; 
+    transition: transform 0.2s; 
+    color: #333; 
+}
+
+#achievements-page .achievement-card:hover { 
+    transform: translateY(-5px); 
+}
+
+#achievements-page .achievement-card .icon { 
+    width: 60px; 
+    height: 60px; 
+    margin: 0 auto 1rem; 
+    color: var(--icon-color); 
+}
+
+#achievements-page .achievement-card .icon.special { 
+    width: 80px; 
+    height: 80px; 
+    background-color: #fff; 
+    border-radius: 50%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    padding: 10px; 
+    margin-top: -10px; 
+}
+
+#achievements-page .achievement-card .icon.special svg { 
+    width: 50px; 
+    height: 50px; 
+}
+
+#achievements-page .achievement-card h3 { 
+    margin: 0 0 0.5rem 0; 
+    font-size: 1rem; 
+}
+
+#achievements-page .achievement-card p { 
+    margin: 0; 
+    font-size: 0.85rem; 
+    color: #555; 
+}
 
 /* --- СТРАНИЦА: ПРОФИЛЬ --- */
-#profile-page .card { background-color: var(--card-bg); }
-#profile-page .profile-header { display: flex; align-items: center; gap: 2rem; }
-#profile-page .avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--sidebar-bg); }
-#profile-page .profile-info h3 { margin: 0 0 0.5rem 0; font-size: 1.8rem; }
-#profile-page .profile-info p { margin: 0; background-color: var(--bg-light); padding: 1rem; border-radius: 12px; }
-#profile-page .btn-edit-profile { margin-top: 1rem; background-color: var(--sidebar-bg); color: white; padding: 0.8rem 1.5rem; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; }
-#profile-page .streak-visual { display: flex; gap: 8px; margin-bottom: 1.5rem; justify-content: center; flex-wrap: wrap; }
-#profile-page .streak-day { width: 75px; height: 75px; border-radius: 8px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.8rem; color: white; position: relative; overflow: hidden; }
-#profile-page .streak-day::before { content: attr(data-day); position: absolute; top: 6px; left: 8px; font-size: 0.7rem; font-weight: 700; opacity: 0.9; color: white; }
-#profile-page .streak-day.filled { background-color: var(--progress-bar-fill); }
-#profile-page .streak-day.pattern { background-color: #cbd5e1; background-image: repeating-linear-gradient( -45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.2) 5px, transparent 5px, transparent 10px ); color: #475569; }
-#profile-page .streak-day.pattern::before { color: #475569; }
-#profile-page .streak-day.empty { background-color: #e2e8f0; color: #94a3b8; }
-#profile-page .streak-day.empty::before { color: #94a3b8; }
-#profile-page .streak-day::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; }
-#profile-page .streak-day[data-day="ПН"]::after { background-color: #ef4444; }
-#profile-page .streak-day[data-day="ВТ"]::after { background-color: #f97316; }
-#profile-page .streak-day[data-day="СР"]::after { background-color: #eab308; }
-#profile-page .streak-day[data-day="ЧТ"]::after { background-color: #22c55e; }
-#profile-page .streak-day[data-day="ПТ"]::after { background-color: #3b82f6; }
-#profile-page .streak-day[data-day="СБ"]::after { background-color: #8b5cf6; }
-#profile-page .streak-day[data-day="ВС"]::after { background-color: #ec4899; }
-#profile-page .streak-summary { text-align: left; font-weight: 700; font-size: 1rem; }
-#profile-page .streak-summary p { margin-bottom: 0.5rem; }
-#profile-page .contact-display { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
-#profile-page .contact-item-display { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background-color: var(--bg-light); border-radius: 12px; }
-#profile-page .contact-icon-display { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: bold; background-color: var(--sidebar-bg); color: white; border-radius: 6px; padding: 0.3rem; }
-#profile-page .contact-text { font-weight: 700; }
-#profile-page .modal-overlay { backdrop-filter: blur(5px); }
-#profile-page .modal-content { background: linear-gradient(135deg, #7484d2 0%, #8c9be4 100%); max-height: 90vh; overflow-y: auto; color: var(--text-light); }
-#profile-page .modal-header h2 { color: var(--text-light); }
-#profile-page .modal-form { display: flex; flex-direction: column; gap: 1.5rem; }
-#profile-page .modal-form .form-group label { color: rgba(255, 255, 255, 0.9); }
-#profile-page .modal-form .form-group input, #profile-page .modal-form .form-group textarea { border: 2px solid rgba(255, 255, 255, 0.3); background-color: rgba(255, 255, 255, 0.1); color: white;}
-#profile-page .modal-actions { display: flex; gap: 1rem; margin-top: 1rem; }
-#profile-page .modal-actions .btn-primary { background-color: var(--nav-item-active-bg); }
-#profile-page .modal-actions .btn-secondary { background-color: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.3); }
-#profile-page .contact-items { display: flex; flex-direction: column; gap: 1rem; }
-#profile-page .contact-item { display: flex; align-items: center; gap: 1rem; padding: 0.5rem; background-color: rgba(0,0,0,0.1); border-radius: 10px; }
-#profile-page .contact-icon { width: 24px; height: 24px; flex-shrink: 0; }
-#profile-page .contact-item input { flex: 1; background: transparent; border: none; color: var(--text-light); font-size: 1rem; padding: 0.5rem; }
+#profile-page .card { 
+    background-color: var(--card-bg); 
+}
+
+#profile-page .profile-header { 
+    display: flex; 
+    align-items: center; 
+    gap: 2rem; 
+}
+
+#profile-page .avatar { 
+    width: 120px; 
+    height: 120px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 4px solid var(--sidebar-bg); 
+}
+
+#profile-page .profile-info h3 { 
+    margin: 0 0 0.5rem 0; 
+    font-size: 1.8rem; 
+}
+
+#profile-page .profile-info p { 
+    margin: 0; 
+    background-color: var(--bg-light); 
+    padding: 1rem; 
+    border-radius: 12px; 
+}
+
+#profile-page .btn-edit-profile { 
+    margin-top: 1rem; 
+    background-color: var(--sidebar-bg); 
+    color: white; 
+    padding: 0.8rem 1.5rem; 
+    border-radius: 10px; 
+    border: none; 
+    font-weight: 700; 
+    cursor: pointer; 
+}
+
+#profile-page .streak-visual { 
+    display: flex; 
+    gap: 8px; 
+    margin-bottom: 1.5rem; 
+    justify-content: center; 
+    flex-wrap: wrap; 
+}
+
+#profile-page .streak-day { 
+    width: 75px; 
+    height: 75px; 
+    border-radius: 8px; 
+    flex: 0 0 auto; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-weight: 800; 
+    font-size: 1.8rem; 
+    color: white; 
+    position: relative; 
+    overflow: hidden; 
+}
+
+#profile-page .streak-day::before { 
+    content: attr(data-day); 
+    position: absolute; 
+    top: 6px; 
+    left: 8px; 
+    font-size: 0.7rem; 
+    font-weight: 700; 
+    opacity: 0.9; 
+    color: white; 
+}
+
+#profile-page .streak-day.filled { 
+    background-color: var(--progress-bar-fill); 
+}
+
+#profile-page .streak-day.pattern { 
+    background-color: #cbd5e1; 
+    background-image: repeating-linear-gradient( -45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.2) 5px, transparent 5px, transparent 10px ); 
+    color: #475569; 
+}
+
+#profile-page .streak-day.pattern::before { 
+    color: #475569; 
+}
+
+#profile-page .streak-day.empty { 
+    background-color: #e2e8f0; 
+    color: #94a3b8; 
+}
+
+#profile-page .streak-day.empty::before { 
+    color: #94a3b8; 
+}
+
+#profile-page .streak-day::after { 
+    content: ''; 
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    bottom: 0; 
+    width: 6px; 
+}
+
+#profile-page .streak-day[data-day="ПН"]::after { 
+    background-color: #ef4444; 
+}
+
+#profile-page .streak-day[data-day="ВТ"]::after { 
+    background-color: #f97316; 
+}
+
+#profile-page .streak-day[data-day="СР"]::after { 
+    background-color: #eab308; 
+}
+
+#profile-page .streak-day[data-day="ЧТ"]::after { 
+    background-color: #22c55e; 
+}
+
+#profile-page .streak-day[data-day="ПТ"]::after { 
+    background-color: #3b82f6; 
+}
+
+#profile-page .streak-day[data-day="СБ"]::after { 
+    background-color: #8b5cf6; 
+}
+
+#profile-page .streak-day[data-day="ВС"]::after { 
+    background-color: #ec4899; 
+}
+
+#profile-page .streak-summary { 
+    text-align: left; 
+    font-weight: 700; 
+    font-size: 1rem; 
+}
+
+#profile-page .streak-summary p { 
+    margin-bottom: 0.5rem; 
+}
+
+#profile-page .contact-display { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 1rem; 
+    margin-top: 1rem; 
+}
+
+#profile-page .contact-item-display { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    padding: 12px 16px; 
+    background-color: var(--bg-light); 
+    border-radius: 12px; 
+}
+
+#profile-page .contact-icon-display { 
+    width: 24px; 
+    height: 24px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-weight: bold; 
+    background-color: var(--sidebar-bg); 
+    color: white; 
+    border-radius: 6px; 
+    padding: 0.3rem; 
+}
+
+#profile-page .contact-text { 
+    font-weight: 700; 
+}
+
+#profile-page .modal-overlay { 
+    backdrop-filter: blur(5px); 
+}
+
+#profile-page .modal-content { 
+    background: linear-gradient(135deg, #7484d2 0%, #8c9be4 100%); 
+    max-height: 90vh; 
+    overflow-y: auto; 
+    color: var(--text-light); 
+}
+
+#profile-page .modal-header h2 { 
+    color: var(--text-light); 
+}
+
+#profile-page .modal-form { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 1.5rem; 
+}
+
+#profile-page .modal-form .form-group label { 
+    color: rgba(255, 255, 255, 0.9); 
+}
+
+#profile-page .modal-form .form-group input, 
+#profile-page .modal-form .form-group textarea { 
+    border: 2px solid rgba(255, 255, 255, 0.3); 
+    background-color: rgba(255, 255, 255, 0.1); 
+    color: white;
+}
+
+#profile-page .modal-actions { 
+    display: flex; 
+    gap: 1rem; 
+    margin-top: 1rem; 
+}
+
+#profile-page .modal-actions .btn-primary { 
+    background-color: var(--nav-item-active-bg); 
+}
+
+#profile-page .modal-actions .btn-secondary { 
+    background-color: rgba(255, 255, 255, 0.2); 
+    border: 2px solid rgba(255, 255, 255, 0.3); 
+}
+
+#profile-page .contact-items { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 1rem; 
+}
+
+#profile-page .contact-item { 
+    display: flex; 
+    align-items: center; 
+    gap: 1rem; 
+    padding: 0.5rem; 
+    background-color: rgba(0,0,0,0.1); 
+    border-radius: 10px; 
+}
+
+#profile-page .contact-icon { 
+    width: 24px; 
+    height: 24px; 
+    flex-shrink: 0; 
+}
+
+#profile-page .contact-item input { 
+    flex: 1; 
+    background: transparent; 
+    border: none; 
+    color: var(--text-light); 
+    font-size: 1rem; 
+    padding: 0.5rem; 
+}
 
 /* ==========================================================================
    7. МОДАЛЬНЫЕ ОКНА
    ========================================================================== */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000; }
-.modal-overlay.active { display: flex; }
-.modal-content { background-color: #fff; color: #333; padding: 2rem; border-radius: 15px; width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; }
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-.modal-header h3 { margin: 0; font-size: 1.3rem; }
-.close-btn { background: none; border: none; font-size: 2rem; cursor: pointer; color: #888; }
-.modal-body textarea { width: 100%; min-height: 100px; padding: 0.8rem; font-family: var(--font-family); font-size: 1rem; border-radius: 10px; border: 1px solid #ddd; resize: vertical; margin-bottom: 1.5rem; box-sizing: border-box; }
-.modal-buttons { display: flex; gap: 1rem; justify-content: flex-end; }
-.modal-buttons button { padding: 0.7rem 1.5rem; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
-.btn-save { background-color: var(--sidebar-bg); color: var(--text-light); }
-.btn-delete { background-color: #ef4444; color: var(--text-light); }
+.modal-overlay { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0,0,0,0.6); 
+    display: none; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 2000; 
+}
+
+.modal-overlay.active { 
+    display: flex; 
+}
+
+.modal-content { 
+    background-color: #fff; 
+    color: #333; 
+    padding: 2rem; 
+    border-radius: 15px; 
+    width: 90%; 
+    max-width: 500px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
+    text-align: center; 
+}
+
+.modal-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 1.5rem; 
+}
+
+.modal-header h3 { 
+    margin: 0; 
+    font-size: 1.3rem; 
+}
+
+.close-btn { 
+    background: none; 
+    border: none; 
+    font-size: 2rem; 
+    cursor: pointer; 
+    color: #888; 
+}
+
+.modal-body textarea { 
+    width: 100%; 
+    min-height: 100px; 
+    padding: 0.8rem; 
+    font-family: var(--font-family); 
+    font-size: 1rem; 
+    border-radius: 10px; 
+    border: 1px solid #ddd; 
+    resize: vertical; 
+    margin-bottom: 1.5rem; 
+    box-sizing: border-box; 
+}
+
+.modal-buttons { 
+    display: flex; 
+    gap: 1rem; 
+    justify-content: flex-end; 
+}
+
+.modal-buttons button { 
+    padding: 0.7rem 1.5rem; 
+    border: none; 
+    border-radius: 10px; 
+    font-weight: 700; 
+    cursor: pointer; 
+}
+
+.btn-save { 
+    background-color: var(--sidebar-bg); 
+    color: var(--text-light); 
+}
+
+.btn-delete { 
+    background-color: #ef4444; 
+    color: var(--text-light); 
+}
 
 /* ==========================================================================
-   8. АДАПТИВНОСТЬ
+   8. АДАПТИВНОСТЬ - ИСПРАВЛЕНА БОКОВАЯ ПАНЕЛЬ ДЛЯ МОБИЛЬНЫХ
    ========================================================================== */
-.mobile-header { display: none; background-color: var(--sidebar-bg); padding: 1rem; color: var(--text-light); justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1001; }
-.mobile-menu-btn { background: none; border: none; color: var(--text-light); font-size: 1.5rem; cursor: pointer; }
+.mobile-header { 
+    display: none; 
+    background-color: var(--sidebar-bg); 
+    padding: 1rem; 
+    color: var(--text-light); 
+    justify-content: space-between; 
+    align-items: center; 
+    position: fixed; /* Изменено на fixed */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1002; /* Выше чем sidebar */
+    height: var(--mobile-header-height);
+    box-sizing: border-box;
+}
+
+.mobile-menu-btn { 
+    background: none; 
+    border: none; 
+    color: var(--text-light); 
+    font-size: 1.5rem; 
+    cursor: pointer; 
+    z-index: 1003;
+}
+
+/* Класс для сдвига основного контента при открытой боковой панели */
+.sidebar-open .main-content {
+    margin-top: var(--mobile-header-height);
+}
 
 @media (max-width: 1024px) {
-    #dashboard-page .main-content { grid-template-columns: 1fr; }
-    #dashboard-page .progress-card, #dashboard-page .streak-card, #dashboard-page .calendar-card { grid-column: 1 / -1; grid-row: auto; }
-    #analytics-page .charts-grid { grid-template-columns: 1fr; }
+    #dashboard-page .main-content { 
+        grid-template-columns: 1fr; 
+    }
+    
+    #dashboard-page .progress-card, 
+    #dashboard-page .streak-card, 
+    #dashboard-page .calendar-card { 
+        grid-column: 1 / -1; 
+        grid-row: auto; 
+    }
+    
+    #analytics-page .charts-grid { 
+        grid-template-columns: 1fr; 
+    }
 }
 
 @media (max-width: 768px) {
-    .dashboard-container { flex-direction: column; }
-    .main-content { padding: 1rem; }
-    #goals-page .top-section, #analytics-page .stats-grid { grid-template-columns: 1fr; }
-    .mobile-header { display: flex; }
-    .sidebar { position: fixed; top: 0; left: -100%; height: 100vh; z-index: 1000; width: 280px; }
-    .sidebar.active { left: 0; }
-    #profile-page .profile-header, #profile-page .contacts-card .content { flex-direction: column; }
-    #calendar-page .calendar-grid { gap: 0.5rem; }
-    #profile-page .streak-day { width: 60px; height: 60px; font-size: 1rem; }
+    .dashboard-container { 
+        flex-direction: column; 
+        padding-top: var(--mobile-header-height); /* Добавлен отступ для мобильного заголовка */
+    }
+    
+    .main-content { 
+        padding: 1rem; 
+        margin-top: 0;
+    }
+    
+    #goals-page .top-section, 
+    #analytics-page .stats-grid { 
+        grid-template-columns: 1fr; 
+    }
+    
+    .mobile-header { 
+        display: flex; 
+    }
+    
+    .sidebar { 
+        position: fixed; 
+        top: var(--mobile-header-height); /* Сдвигаем вниз на высоту заголовка */
+        left: -100%; 
+        height: calc(100vh - var(--mobile-header-height)); /* Высота минус заголовок */
+        z-index: 1000; 
+        width: 280px; 
+        transform: translateX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar.active { 
+        left: 0; 
+        transform: translateX(0);
+    }
+    
+    /* Темный оверлей при открытой боковой панели */
+    .sidebar-overlay {
+        position: fixed;
+        top: var(--mobile-header-height);
+        left: 0;
+        width: 100%;
+        height: calc(100% - var(--mobile-header-height));
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+    }
+    
+    .sidebar-overlay.active {
+        display: block;
+    }
+    
+    #profile-page .profile-header, 
+    #profile-page .contacts-card .content { 
+        flex-direction: column; 
+    }
+    
+    #calendar-page .calendar-grid { 
+        gap: 0.5rem; 
+    }
+    
+    #profile-page .streak-day { 
+        width: 60px; 
+        height: 60px; 
+        font-size: 1rem; 
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding: 0.75rem;
+    }
+    
+    .card {
+        padding: 1rem;
+    }
+    
+    #analytics-page .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    #achievements-page .achievements-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .sidebar {
+        width: 85%;
+    }
 }
