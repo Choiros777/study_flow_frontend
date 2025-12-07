@@ -7,24 +7,424 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        :root { --bg-light: #f3f4f8; --sidebar-bg: #7484d2; --card-bg: #a9baf0; --nav-item-bg: #8c9be4; --nav-item-active-bg: #4f5b93; --progress-bar-fill: #34d399; --text-light: #ffffff; --text-dark: #333333; --font-family: 'Nunito', sans-serif; }
+        body { margin: 0; font-family: var(--font-family); background-color: var(--bg-light); color: var(--text-dark); }
+        body[data-theme="blue"] { --sidebar-bg: #4169E1; --card-bg: #00008B; --nav-item-bg: #4682B4; --nav-item-active-bg: #3b5974; --progress-bar-fill: #228B22; }
+        body[data-theme="orange"] { --bg-light: #FFC300; --sidebar-bg: #E49B0F; --card-bg: #D9534F; --nav-item-bg: #C94A46; --nav-item-active-bg: #A93E3A; --progress-bar-fill: #4285F4; --text-dark: #333333; }
+        
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { background-color: var(--sidebar-bg); padding: 2rem 1.5rem; width: 250px; flex-shrink: 0; color: var(--text-light); box-sizing: border-box; display: flex; flex-direction: column; }
+        .logo { font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 3rem; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar ul li a { display: block; padding: 1rem 1.5rem; margin-bottom: 1rem; border-radius: 12px; text-decoration: none; color: var(--text-light); background-color: var(--nav-item-bg); font-weight: 700; transition: background-color 0.3s ease; }
+        .theme-btn.orange { background-color: #E49B0F; }
+        .sidebar ul li a.active { background-color: var(--nav-item-active-bg); }
+        .sidebar ul li a:hover { background-color: #6a7ac5; }
+        
+        .main-content { flex-grow: 1; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+        .card { background-color: #6a7ac5; border-radius: 20px; padding: 1.5rem 2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .card h2 { margin-top: 0; font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem; }
+        
+        .profile-header { display: flex; align-items: center; gap: 2rem; }
+        .profile-info h3 { margin: 0 0 0.5rem 0; font-size: 1.8rem; font-weight: 800; }
+        .profile-info p { margin: 0; background-color: var(--bg-light); padding: 1rem; border-radius: 12px; }
+        
+        /* === ИЗМЕНЕННЫЕ КВАДРАТИКИ СТРИКА С ДНЯМИ НЕДЕЛИ === */
+        .streak-visual {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+        
+        .streak-day {
+            width: 75px;
+            height: 75px;
+            border-radius: 4px;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: white;
+            position: relative;
+        }
+        
+        /* День недели внутри квадратика */
+        .streak-day::before {
+            content: attr(data-day);
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        
+        .streak-day.filled { 
+            background-color: var(--progress-bar-fill); 
+        }
+        
+        .streak-day.pattern { 
+            background-color: #cbd5e1; 
+            background-image: repeating-linear-gradient( 
+                45deg, 
+                transparent, 
+                transparent 5px, 
+                rgba(255,255,255,0.5) 5px, 
+                rgba(255,255,255,0.5) 10px 
+            ); 
+            color: #475569;
+        }
+        
+        .streak-day.empty { 
+            background-color: #e2e8f0; 
+            color: #94a3b8;
+        }
+        
+        /* Цвета для дней недели */
+        .streak-day[data-day="ПН"] { border-left: 4px solid #ef4444; }
+        .streak-day[data-day="ВТ"] { border-left: 4px solid #f97316; }
+        .streak-day[data-day="СР"] { border-left: 4px solid #eab308; }
+        .streak-day[data-day="ЧТ"] { border-left: 4px solid #22c55e; }
+        .streak-day[data-day="ПТ"] { border-left: 4px solid #3b82f6; }
+        .streak-day[data-day="СБ"] { border-left: 4px solid #8b5cf6; }
+        .streak-day[data-day="ВС"] { border-left: 4px solid #ec4899; }
+
+        .contacts-card .content { display: flex; gap: 2rem; }
+        .contact-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem; flex-basis: 200px; }
+        .contact-links li { padding: 0.8rem 1rem; background-color: var(--bg-light); border-radius: 12px; font-weight: 700; }
+        .contact-placeholder { flex-grow: 1; background-color: var(--bg-light); border-radius: 12px; min-height: 100px; }
+
+        .theme-switcher { margin-top: auto; padding-top: 2rem; }
+        .theme-switcher h4 { text-align: center; margin-bottom: 0.5rem; }
+        .theme-buttons { display: flex; justify-content: center; gap: 1rem; }
+        .theme-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid white; cursor: pointer; }
+        .theme-btn.purple { background-color: #7484d2; }
+        .theme-btn.blue { background-color: #4169E1; }
+        
+        .mobile-header { display: none; background-color: var(--sidebar-bg); padding: 1rem; color: var(--text-light); justify-content: space-between; align-items: center; }
+        .mobile-menu-btn { background: none; border: none; color: var(--text-light); font-size: 1.5rem; cursor: pointer; }
+
+        /* Модальное окно редактирования */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #7484d2 0%, #8c9be4 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            color: var(--text-light);
+        }
+        
+        .modal-header {
+            margin-bottom: 2rem;
+            text-align: center;
+            
+        }
+        
+        .modal-header h2 {
+            color: var(--text-light);
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+        
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(255, 255, 255, 0.9);
+            font-family: var(--font-family);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--text-light);
+            background-color: white;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 12px;
+            border: none;
+            font-family: var(--font-family);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--nav-item-active-bg);
+            color: var(--text-light);
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a4780;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--text-light);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Контакты в профиле */
+        .contact-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .contact-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 0.3rem;
+        }
+
+               /* Контактные данные в профиле */
+        .contact-display {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .contact-item-display {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background-color: var(--bg-light);
+            border-radius: 12px;
+        }
+        
+        .contact-icon-display {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background-color: var(--sidebar-bg);
+            color: white;
+            border-radius: 6px;
+            padding: 0.3rem;
+        }
+        
+        .contact-text {
+            font-weight: 700;
+            color: var(--text-dark);
+           
+        }
+        
+        .contact-item input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            font-family: var(--font-family);
+            font-size: 1rem;
+            padding: 0.5rem;
+        }
+        
+        .contact-item input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .contact-item input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+        }
+        
+        /* Сообщения */
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: rgba(45, 206, 137, 0.9);
+            color: white;
+            display: block;
+        }
+        
+        .alert-error {
+            background-color: rgba(239, 68, 68, 0.9);
+            color: white;
+            display: block;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+        
+        .close-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* === АДАПТИВНОСТЬ === */
+        @media (max-width: 768px) {
+            .dashboard-container { flex-direction: column; }
+            .mobile-header { display: flex; }
+            .sidebar { position: fixed; top: 0; left: -100%; height: 100vh; z-index: 1000; width: 280px; transition: left 0.3s ease; }
+            .sidebar.active { left: 0; }
+            .main-content { padding: 1rem; gap: 1rem; }
+            .card { padding: 1rem; }
+            .profile-header { flex-direction: column; text-align: center; gap: 1rem; }
+            .avatar { width: 100px; height: 100px; }
+            .contacts-card .content { flex-direction: column; }
+            
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+            
+            /* Адаптивность для квадратиков */
+            .streak-day {
+                width: 60px;
+                height: 60px;
+                font-size: 1rem;
+            }
+            
+            .streak-day::before {
+                font-size: 0.6rem;
+            }
+        }
+    </style>
 </head>
-<body id="profile-page">
+<body>
+
     <div class="dashboard-container">
         <header class="mobile-header">
             <button class="mobile-menu-btn">☰</button>
             <h1 class="logo" style="margin: 0; font-size: 1.5rem;">StudyFlow</h1>
             <div style="width: 40px;"></div>
         </header>
+        
         <nav class="sidebar">
             <h1 class="logo">StudyFlow</h1>
             <ul>
-                <li><a href="dashboard.html">Главная</a></li>
-                <li><a href="goals.html">Цели</a></li>
-                <li><a href="analytics.html">Аналитика</a></li>
-                <li><a href="calendar.html">Календарь</a></li>
-                <li><a href="achievements.html">Достижения</a></li>
-                <li><a href="profile.html" class="active">Профиль</a></li>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="Targets.html">Цели</a></li>
+                <li><a href="Analitics/Analitics.html">Аналитика</a></li>
+                <li><a href="Calendar.html">Календарь</a></li>
+                <li><a href="Achievments.html">Достижения</a></li>
+                <li><a href="Profile.html" class="active">Профиль</a></li>
             </ul>
             <div class="theme-switcher">
                 <h4>Сменить тему</h4>
@@ -36,48 +436,366 @@
         </nav>
 
         <main class="main-content">
+            <!-- Уведомления -->
             <div id="notification" class="alert" style="display: none;"></div>
+            
+            <!-- Профиль пользователя -->
             <div class="card profile-header">
                 <div class="profile-info">
-                    <h3 id="user-name">Загрузка...</h3>
-                    <p id="user-comment">Загрузка...</p>
-                    <button id="edit-profile-btn" class="btn btn-edit-profile">Редактировать профиль</button>
+                    <h3 id="user-name" style="color: white;">Загрузка...</h3>
+                    <p id="user-comment" style="color: black;">Загрузка...</p>
+                    <button id="edit-profile-btn" class="btn" style="margin-top: 1rem; background-color: var(--sidebar-bg); color: white; padding: 0.8rem 1.5rem; border-radius: 10px; border: none; font-weight: 700; cursor: pointer;">Редактировать профиль</button>
                 </div>
             </div>
+
+            <!-- Стрик -->
             <div class="card">
-                <h2>Стрик обучения</h2>
-                <div class="streak-visual" id="streak-container"></div>
-                <div class="streak-summary">
-                    <p>Дней подряд: <span id="streak-days">0</span></p>
-                    <p>Всего дней обучения: <span id="total-days">0</span></p>
+                <h2 style="color: white;">Стрик обучения</h2>
+                <div class="streak-visual" id="streak-container">
+                 
+                </div>
+                <p  style="color: white;">Дней подряд: <span id="streak-days">0</span></p>
+                <p style="color: white;">Всего дней обучения: <span id="total-days">0</span></p>
+            </div>
+            
+            <!-- Контакты и социальные ссылки -->
+             <div class="card contacts-card">
+                <h2 style="color: white;">Контакты</h2>
+                <div class="content">
+                    <div class="contact-display">
+                        <div class="contact-item-display">
+                            <span class="contact-icon-display">@</span>
+                            <span class="contact-text" id="contact-email">user@example.com</span>
+                        </div>
+                        <div class="contact-item-display">
+                            <span class="contact-icon-display">TG</span>
+                            <span class="contact-text" id="contact-telegram">@michail_z</span>
+                        </div>
+                        <div class="contact-item-display">
+                            <span class="contact-icon-display">VK</span>
+                            <span class="contact-text" id="contact-vk">https://vk.com/michail_z</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="card contacts-card">
-                <h2>Контакты</h2>
-                <div class="contact-display">
-                    <div class="contact-item-display"><span class="contact-icon-display">@</span><span class="contact-text" id="contact-email">нет данных</span></div>
-                    <div class="contact-item-display"><span class="contact-icon-display">TG</span><span class="contact-text" id="contact-telegram">нет данных</span></div>
-                    <div class="contact-item-display"><span class="contact-icon-display">VK</span><span class="contact-text" id="contact-vk">нет данных</span></div>
-                </div>
-            </div>
+
+
         </main>
     </div>
 
+    <!-- Модальное окно редактирования -->
     <div id="edit-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-btn" id="close-modal">×</button>
-            <div class="modal-header"><h2>Редактирование</h2></div>
+            <div class="modal-header">
+                <h2>Редактирование</h2>
+            </div>
+            
             <form id="edit-profile-form" class="modal-form">
-                <div class="form-group"><label for="edit-name">ФИО</label><input type="text" id="edit-name" placeholder="Имя Фамилия" required></div>
-                <div class="form-group"><label for="edit-description">Описание</label><textarea id="edit-description" placeholder="Расскажите о себе"></textarea></div>
-                <div class="form-group"><label>Контакты</label><div class="contact-items"><div class="contact-item"><span class="contact-icon">@</span><input type="email" id="edit-email" placeholder="Email"></div><div class="contact-item"><span class="contact-icon">TG</span><input type="text" id="edit-telegram" placeholder="Telegram username"></div><div class="contact-item"><span class="contact-icon">VK</span><input type="text" id="edit-vk" placeholder="VK ссылка"></div></div></div>
-                <div class="modal-actions"><button type="button" id="cancel-edit-btn" class="btn btn-secondary">Отмена</button><button type="submit" id="save-profile-btn" class="btn btn-primary">Сохранить</button></div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-name">ФИО</label>
+                        <input type="text" id="edit-name" placeholder="Имя Фамилия" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-description">Описание</label>
+                    <textarea id="edit-description" placeholder="Расскажите о себе"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Контакты</label>
+                    <div class="contact-items">
+                        <div class="contact-item">
+                            <span class="contact-icon">@</span>
+                            <input type="email" id="edit-email" placeholder="Email" value="user@example.com">
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">TG</span>
+                            <input type="text" id="edit-telegram" placeholder="Telegram username" value="@michail_z">
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">VK</span>
+                            <input type="text" id="edit-vk" placeholder="VK ссылка" value="https://vk.com/michail_z">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" id="cancel-edit-btn" class="btn btn-secondary">Отмена</button>
+                    <button type="submit" id="save-profile-btn" class="btn btn-primary">Сохранить изменения</button>
+                </div>
             </form>
         </div>
     </div>
-    
-    <script src="js/auth.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/profile.js"></script>
+
+
+
 </body>
 </html>
+
+<script>
+
+
+    const themeButtons = document.querySelectorAll('[data-set-theme]');
+    const storageKey = 'studyflow-theme';
+    const applyTheme = (theme) => {
+        document.body.setAttribute('data-theme', theme === 'default' ? '' : theme);
+    };
+    
+    themeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const theme = button.dataset.setTheme;
+            applyTheme(theme);
+            localStorage.setItem(storageKey, theme);
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem(storageKey);
+        if (savedTheme) applyTheme(savedTheme);
+
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const sidebar = document.querySelector('.sidebar');
+        if (mobileMenuBtn && sidebar) {
+            mobileMenuBtn.addEventListener('click', () => sidebar.classList.toggle('active'));
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+
+        // Инициализация профиля
+        initializeProfile();
+    });
+
+    // === ИНТЕГРАЦИЯ С БЭКЕНДОМ ===
+    
+    const API_BASE_URL = 'http://127.0.0.1:8000/';
+    const USER_ID = 1; 
+
+    // Функция для отображения уведомлений
+    function showNotification(message, type = 'success') 
+    {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = `alert alert-${type}`;
+        notification.style.display = 'block';
+        
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 5000);
+    }
+
+    // Функция для обработки ошибок API
+    function handleApiError(error, context = 'операции') {
+        console.error(`Ошибка при выполнении ${context}:`, error);
+        
+        if (error.response) {
+            // Ошибка от сервера
+            if (error.response.status === 422) {
+                const errors = error.response.data.details || [];
+                const errorMessages = errors.map(err => `• ${err.msg || 'Ошибка валидации'}`).join('\n');
+                showNotification(`Ошибки валидации:\n${errorMessages}`, 'error');
+            } else {
+                showNotification(`Ошибка сервера: ${error.response.status}`, 'error');
+            }
+        } else if (error.request) {
+            // Запрос был отправлен, но ответ не получен
+            showNotification('Не удалось подключиться к серверу', 'error');
+        } else {
+            // Ошибка при настройке запроса
+            showNotification(`Ошибка: ${error.message}`, 'error');
+        }
+    }
+
+    // Управление модальным окном
+    const editModal = document.getElementById('edit-modal');
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    const closeModalBtn = document.getElementById('close-modal');
+    const cancelEditBtn = document.getElementById('cancel-edit-btn');
+
+    function openEditModal() {
+        editModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditModal() {
+        editModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Загрузка данных профиля
+    async function loadProfile() {
+        try {
+            // Имитация задержки загрузки
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Имитация данных с бэкенда
+            const mockProfileData = {
+                "email": "user@example.com",
+                "username": "michail_z",
+                "name": "Зубенко Михаил Петрович",
+                "comment": "Мафиозник",
+                "id": USER_ID,
+                "streak_days": 3,
+                "total_days": 15,
+                "telegram": "@michail_z",
+                "vk": "https://vk.com/michail_z"
+            };
+            
+            // Обновление UI
+            document.getElementById('user-name').textContent = mockProfileData.name;
+            document.getElementById('user-comment').textContent = mockProfileData.comment;
+            document.getElementById('edit-name').value = mockProfileData.name;
+            document.getElementById('edit-description').value = mockProfileData.comment;
+            document.getElementById('edit-email').value = mockProfileData.email;
+            document.getElementById('edit-telegram').value = mockProfileData.telegram;
+            document.getElementById('edit-vk').value = mockProfileData.vk;
+            
+            // Обновление стрика С ДНЯМИ НЕДЕЛИ
+            updateStreakVisual(mockProfileData.streak_days, mockProfileData.total_days);
+            document.getElementById('streak-days').textContent = mockProfileData.streak_days;
+            document.getElementById('total-days').textContent = mockProfileData.total_days;
+            
+            return mockProfileData;
+        } catch (error) {
+            handleApiError(error, 'загрузки профиля');
+            return null;
+        }
+    }
+
+    // Обновление визуализации стрика С ДНЯМИ НЕДЕЛИ
+    function updateStreakVisual(currentStreak, totalDays) {
+        const container = document.getElementById('streak-container');
+        container.innerHTML = '';
+        
+        const maxDays = 7; // 7 дней недели
+        const weekDays = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
+        
+        for (let i = 0; i < maxDays; i++) {
+            const day = document.createElement('div');
+            day.className = 'streak-day';
+            day.setAttribute('data-day', weekDays[i]);
+            day.textContent = i + 1; // Номер дня (1-7)
+            
+            // Определяем состояние дня
+            if (i < currentStreak) {
+                day.classList.add('filled');
+            } else if (i < totalDays && i >= currentStreak) {
+                day.classList.add('pattern');
+            } else {
+                day.classList.add('empty');
+            }
+            
+            container.appendChild(day);
+        }
+    }
+
+    // Сохранение профиля
+    async function saveProfile(profileData) {
+        try {
+          
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Обновление UI
+            document.getElementById('user-name').textContent = profileData.name;
+            document.getElementById('user-comment').textContent = profileData.description;
+            
+           
+            document.querySelector('.contacts-card address p:nth-child(1)').textContent = profileData.email;
+            document.querySelector('.contacts-card address p:nth-child(2)').textContent = `TG ${profileData.telegram}`;
+            document.querySelector('.contacts-card address p:nth-child(3)').textContent = `VK ${profileData.vk}`;
+            
+            showNotification('Профиль успешно обновлен!');
+            
+           
+            closeEditModal();
+            
+            return { success: true, message: 'Профиль обновлен' };
+            
+        } catch (error) {
+            handleApiError(error, 'сохранения профиля');
+            return { success: false, message: error.message };
+        }
+    }
+
+    
+    function validateForm(formData) {
+        const errors = [];
+        
+      
+        if (!formData.name || formData.name.trim().length < 2) {
+            errors.push('ФИО должно содержать минимум 2 символа');
+        }
+        
+     
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            errors.push('Введите корректный email');
+        }
+        
+        return errors;
+    }
+
+    // Инициализация профиля
+    function initializeProfile() {
+        // Загрузка данных профиля
+        loadProfile();
+        
+        // Обработчики для модального окна
+        editProfileBtn.addEventListener('click', openEditModal);
+        closeModalBtn.addEventListener('click', closeEditModal);
+        cancelEditBtn.addEventListener('click', closeEditModal);
+        
+        
+        editModal.addEventListener('click', (e) => {
+            if (e.target === editModal) {
+                closeEditModal();
+            }
+        });
+        
+        // Закрытие по Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && editModal.classList.contains('active')) {
+                closeEditModal();
+            }
+        });
+        
+      
+        document.getElementById('edit-profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('edit-name').value,
+                description: document.getElementById('edit-description').value,
+                email: document.getElementById('edit-email').value,
+                telegram: document.getElementById('edit-telegram').value,
+                vk: document.getElementById('edit-vk').value
+            };
+            
+           
+            const errors = validateForm(formData);
+            if (errors.length > 0) {
+                showNotification(errors.join('\n'), 'error');
+                return;
+            }
+            
+           
+            const saveBtn = document.getElementById('save-profile-btn');
+            const originalText = saveBtn.textContent;
+            saveBtn.textContent = 'Сохранение...';
+            saveBtn.disabled = true;
+            
+            await saveProfile(formData);
+            
+           
+            saveBtn.textContent = originalText;
+            saveBtn.disabled = false;
+        });
+    }
+</script>
+
+
