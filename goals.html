@@ -9,24 +9,808 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+    <style>
+        :root {
+            --bg-light: #f3f4f8;
+            --sidebar-bg: #7484d2;
+            --card-bg: #a9baf0;
+            --nav-item-bg: #8c9be4;
+            --nav-item-active-bg: #4f5b93;
+            --progress-bar-bg: #e0e0e0;
+            --progress-bar-fill: #34d399;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --font-family: 'Nunito', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-family);
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        body[data-theme="blue"] {
+            --sidebar-bg: #4169E1; 
+            --card-bg: #4169E1; 
+            --nav-item-bg: #4682B4;
+            --nav-item-active-bg: #3b5974;
+            --progress-bar-fill: #228B22; 
+        }
+
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { background-color: var(--sidebar-bg); padding: 2rem 1.5rem; width: 250px; flex-shrink: 0; color: var(--text-light); box-sizing: border-box; display: flex; flex-direction: column; }
+        .logo { font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 3rem; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar ul li a { display: block; padding: 1rem 1.5rem; margin-bottom: 1rem; border-radius: 12px; text-decoration: none; color: var(--text-light); background-color: var(--nav-item-bg); font-weight: 700; transition: background-color 0.3s ease; }
+        .sidebar ul li a.active { background-color: var(--nav-item-active-bg); }
+        .sidebar ul li a:hover { background-color: #6a7ac5; }
+        
+        .main-content { flex-grow: 1; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+        .top-section { 
+            display: grid; 
+            grid-template-columns: 2fr 1fr; 
+            gap: 2rem; 
+        }
+        
+        .card { border-radius: 20px; padding: 1.5rem; box-sizing: border-box; }
+        .card h2 { margin-top: 0; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 800; }
+        
+        /* Форма создания цели слева */
+        .new-goal-form { 
+            background-color: #ffffff; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 700; color: #444; }
+        .form-group input, .form-group textarea { 
+            width: 100%; 
+            padding: 0.8rem 1rem; 
+            border: 1px solid #e0e0e0; 
+            background-color: var(--bg-light); 
+            box-sizing: border-box; 
+            font-family: var(--font-family); 
+            font-size: 1rem; 
+            border-radius: 12px; 
+        }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+        
+        /* Кнопка помощи ИИ в форме создания цели */
+        .ai-help-in-form {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed rgba(0,0,0,0.1);
+        }
+        
+        .ai-help-btn {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 0 auto;
+            padding: 0.5rem;
+            width: 100%;
+        }
+        
+        .ai-help-btn:hover {
+            color: #333;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        /* Слайдер важности */
+        .stepped-slider {
+            width: 100%;
+            margin: 15px 0;
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .slider-labels span {
+            text-align: center;
+            width: 40px;
+        }
+        
+        .slider-with-steps {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            outline: none;
+            margin: 5px 0;
+            -webkit-appearance: none;
+        }
+        
+        .slider-with-steps::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+        
+        .current-value {
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 2px 0;
+        }
+        
+        /* Кнопки */
+        .form-buttons { 
+            display: flex; 
+            gap: 1rem; 
+            margin-top: 1.5rem; 
+        }
+        
+        .form-buttons button { 
+            flex: 1; 
+            padding: 0.8rem; 
+            border: none; 
+            font-size: 1rem; 
+            font-weight: 700; 
+            color: var(--text-light); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+        }
+        
+        .btn-secondary { background-color: var(--nav-item-bg); }
+        .btn-secondary:hover { background-color: #6a7ac5; }
+        .btn-primary { background-color: var(--progress-bar-fill); }
+        .btn-primary:hover { background-color: #2cb88a; }
+        
+        /* Календарь */
+        .picker-group {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+        }
+        
+        .flatpickr-input {
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            width: 250px;
+            font-size: 16px;
+        }
+        
+        /* Советы справа */
+        .tips-card { 
+            background-color: var(--card-bg); 
+            display: flex; 
+            flex-direction: column;
+            height: fit-content;
+        }
+        
+        .tip-content { 
+            flex-grow: 1; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            background-color: rgba(255, 255, 255, 0.5); 
+            margin-bottom: 1rem; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            padding: 1rem; 
+            min-height: 150px;
+        }
+        
+        .tip-content span { 
+            white-space: pre-wrap; 
+            line-height: 1.6; 
+            text-align: center; 
+        }
+        
+        .pagination { 
+            display: flex; 
+            justify-content: space-between; 
+            gap: 0.5rem; 
+        }
+        
+        .pagination span { 
+            flex: 1; 
+            text-align: center; 
+            padding: 0.5rem; 
+            background-color: rgba(255, 255, 255, 0.5); 
+            border-radius: 8px; 
+            font-weight: 700; 
+            cursor: pointer;
+        }
+        
+        .pagination span:hover {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Заголовок с категориями */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            margin: 0;
+        }
+        
+        /* Кнопки категорий слева */
+        .categories-left {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .category-btn {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .category-btn:hover {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .category-btn.active {
+            background-color: var(--nav-item-bg);
+            color: white;
+        }
+        
+        .category-btn i {
+            margin-right: 0.3rem;
+        }
+        
+        /* Выпадающее меню для создания категории */
+        .create-category-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 100%;
+            background-color: white;
+            min-width: 350px;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            z-index: 100;
+            padding: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-content.show {
+            display: block;
+        }
+        
+        .dropdown-header {
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        
+        .category-input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+        
+        /* Секция назначения категорий целям */
+        .assign-goals-section {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .assign-goals-title {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .goals-to-assign {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+        
+        .goal-to-assign {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            transition: background-color 0.2s;
+        }
+        
+        .goal-to-assign:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .goal-to-assign input[type="checkbox"] {
+            margin-right: 0.8rem;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .goal-to-assign label {
+            cursor: pointer;
+            flex-grow: 1;
+            font-size: 0.9rem;
+        }
+        
+        .no-goals-message {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px dashed #ddd;
+        }
+        
+        .dropdown-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .dropdown-action-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        
+        .create-btn {
+            background-color: #e7f4e4;
+            color: #2d8c2d;
+        }
+        
+        .create-btn:hover {
+            background-color: #d4edda;
+        }
+        
+        .cancel-btn {
+            background-color: #f0f0f0;
+            color: #666;
+        }
+        
+        .cancel-btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        /* Выпадающее меню назначения категорий */
+        .assign-category-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .assign-category-content {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 100%;
+            background-color: white;
+            min-width: 280px;
+            max-width: 400px;
+            max-height: 70vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            z-index: 100;
+            padding: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .assign-category-content.show {
+            display: block;
+        }
+        
+        .category-select-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background-color: white;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Выпадающее меню категорий */
+        .categories-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .categories-dropdown-content {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 100%;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            z-index: 100;
+            padding: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .categories-dropdown-content.show {
+            display: block;
+        }
+        
+        .categories-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.7rem 0.5rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .dropdown-item input[type="checkbox"] {
+            margin-right: 0.8rem;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .dropdown-item label {
+            cursor: pointer;
+            flex-grow: 1;
+        }
+        
+        /* Выпадающее меню удаления категорий */
+        .delete-category-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .delete-dropdown-content {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 100%;
+            background-color: white;
+            min-width: 220px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            z-index: 100;
+            padding: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .delete-dropdown-content.show {
+            display: block;
+        }
+        
+        .delete-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+        
+        .delete-btn {
+            width: 100%;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            background-color: #fdeaea;
+            color: #dc3545;
+            transition: background-color 0.3s;
+        }
+        
+        .delete-btn:hover {
+            background-color: #f8d7da;
+        }
+        
+        .no-categories {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 1rem 0;
+        }
+        
+        /* Кнопка применения категории */
+        .apply-category-btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            background-color: #e3f2fd;
+            color: #1976d2;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .apply-category-btn:hover {
+            background-color: #bbdefb;
+        }
+        
+        /* Все цели */
+        .goals-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 1rem; 
+        }
+        
+        .goal-item { 
+            background-color: #ffffff; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+            padding: 1rem 1.5rem; 
+            border-radius: 15px; 
+            position: relative;
+        }
+        
+        .goal-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 0.5rem; 
+            flex-wrap: wrap; 
+            gap: 0.5rem;
+        }
+        
+        .goal-header h3 { 
+            margin: 0; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+        }
+        
+        .goal-category {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            background-color: #e3f2fd;
+            color: #1976d2;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .goal-category:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .goal-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .assign-category-icon {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .assign-category-icon:hover {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .goal-deadline { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            font-weight: 700; 
+            font-size: 0.9rem; 
+        }
+        
+        .goal-deadline input[type="checkbox"] { 
+            width: 18px; 
+            height: 18px; 
+        }
+        
+        .goal-item p { 
+            margin: 0 0 1rem 0; 
+            color: #555; 
+        }
+        
+        .progress-bar-container { 
+            background-color: #f3f4f8; 
+            border-radius: 999px; 
+            height: 10px; 
+            width: 100%; 
+            overflow: hidden; 
+            border: 1px solid #e0e0e0; 
+        }
+        
+        .progress-bar { 
+            background-color: var(--progress-bar-fill); 
+            height: 100%; 
+            border-radius: 999px; 
+        }
+        
+        /* Смена темы */
+        .theme-switcher { 
+            margin-top: auto; 
+            padding-top: 2rem; 
+        }
+        
+        .theme-switcher h4 { 
+            text-align: center; 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .theme-buttons { 
+            display: flex; 
+            justify-content: center; 
+            gap: 1rem; 
+        }
+        
+        .theme-btn { 
+            width: 30px; 
+            height: 30px; 
+            border-radius: 50%; 
+            border: 2px solid white; 
+            cursor: pointer; 
+        }
+        
+        .theme-btn.purple { background-color: #7484d2; }
+        .theme-btn.blue { background-color: #4169E1; }
+        
+        /* Мобильный заголовок */
+        .mobile-header { 
+            display: none; 
+            background-color: var(--sidebar-bg); 
+            padding: 1rem; 
+            color: var(--text-light); 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        .mobile-menu-btn { 
+            background: none; 
+            border: none; 
+            color: var(--text-light); 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 992px) {
+            .top-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .categories-left {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .dropdown-content,
+            .assign-category-content {
+                min-width: 300px;
+                max-width: 90vw;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container { flex-direction: column; }
+            .mobile-header { display: flex; }
+            .sidebar { position: fixed; top: 0; left: -100%; height: 100vh; z-index: 1000; width: 280px; transition: left 0.3s ease; }
+            .sidebar.active { left: 0; }
+            .main-content { padding: 1rem; gap: 1rem; }
+            .card { padding: 1rem; }
+            .form-buttons { flex-direction: column; }
+            .flatpickr-input { width: 100%; }
+            .dropdown-content,
+            .assign-category-content {
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+                max-width: 400px;
+                max-height: 80vh;
+            }
+            
+            .goal-actions {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+        }
+    </style>
 </head>
-<body id="goals-page">
+<body>
     <div class="dashboard-container">
         <header class="mobile-header">
             <button class="mobile-menu-btn">☰</button>
             <h1 class="logo" style="margin: 0; font-size: 1.5rem;">StudyFlow</h1>
             <div style="width: 40px;"></div>
         </header>
+
         <nav class="sidebar">
             <h1 class="logo">StudyFlow</h1>
             <ul>
-                <li><a href="dashboard.html">Главная</a></li>
-                <li><a href="goals.html" class="active">Цели</a></li>
-                <li><a href="analytics.html">Аналитика</a></li>
-                <li><a href="calendar.html">Календарь</a></li>
-                <li><a href="achievements.html">Достижения</a></li>
-                <li><a href="profile.html">Профиль</a></li>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="#" class="active">Цели</a></li>
+                <li><a href="Analitics.html">Аналитика</a></li>
+                <li><a href="Calendar.html">Календарь</a></li>
+                <li><a href="Achievments.html">Достижения</a></li>
+                <li><a href="Profile.html">Профиль</a></li>
             </ul>
             <div class="theme-switcher">
                 <h4>Сменить тему</h4>
@@ -36,23 +820,938 @@
                 </div>
             </div>
         </nav>
+
         <main class="main-content">
             <div class="top-section">
-                <div class="card new-goal-card"><h2>Новая цель</h2><div class="form-buttons"><button class="btn-secondary">Дедлайн</button><button class="btn-primary" onclick="showgoalDialog()">Создать</button></div></div>
-                <div class="card tips-card"><h2>Советы</h2><div class="tip-content"><span>Упал - вставай...</span></div><div class="pagination"><span>&larr;</span><span>1/n</span><span>&rarr;</span></div></div>
+                <!-- Форма создания цели -->
+                <div class="card new-goal-form">
+                    <h2>🎯 Создать новую цель</h2>
+                    
+                    <div class="form-group">
+                        <label for="goalTitle">Название цели</label>
+                        <input type="text" id="goalTitle" placeholder="Например: Выучить английский язык">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="goalDescription">Описание цели</label>
+                        <textarea id="goalDescription" placeholder="Опишите свою цель подробнее..."></textarea>
+                    </div>
+                    
+                    <h3>⚠️ Важность цели</h3>
+                    <div class="stepped-slider">
+                        <input type="range" id="importanceSlider" class="slider-with-steps" min="0" max="10" value="5" step="1">
+                        <div class="slider-labels">
+                            <span>Низкая</span>
+                            <span>Средняя</span>
+                            <span>Высокая</span>
+                        </div>
+                        <div class="current-value" id="importanceValue">5</div>
+                    </div>
+                    
+                    <div class="picker-group">
+                        <h3>📅 Дедлайн</h3>
+                        <input type="datetime-local" id="goalDeadline" class="flatpickr-input" placeholder="Выберите дату и время">
+                    </div>
+                    
+                    <div class="form-buttons">
+                        <button type="button" class="btn-secondary" onclick="clearForm()">Очистить</button>
+                        <button type="button" class="btn-primary" onclick="saveGoal()">Сохранить цель</button>
+                    </div>
+                    
+                    <!-- Кнопка помощи ИИ в форме создания цели -->
+                    <div class="ai-help-in-form">
+                        <button class="ai-help-btn" onclick="showAIHelp()">
+                            <i class="fas fa-robot"></i> Помощь ИИ в создании цели
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Плашка с советами  -->
+                <div class="card tips-card">
+                    <h2>Советы</h2>
+                    <div class="tip-content">
+                        <span id="currentTip">Разбивайте большие цели на маленькие подзадачи. Так будет проще отслеживать прогресс и не терять мотивацию!</span>
+                    </div>
+                    <div class="pagination">
+                        <span onclick="prevTip()">&larr;</span>
+                        <span id="tipCounter">1/6</span>
+                        <span onclick="nextTip()">&rarr;</span>
+                    </div>
+                </div>
             </div>
-            <div class="all-goals-section"><h2>Все цели</h2><div class="goals-list"><!-- Список целей будет генерироваться JS --></div></div>
+            
+            <!-- Заголовок с категориями -->
+            <div class="section-header">
+                <div class="categories-left">
+                    <button class="category-btn active" id="allGoalsBtn">
+                        <i class="fas fa-list"></i> Все цели
+                    </button>
+                    
+                    <!-- Кнопка создания категории -->
+                    <div class="create-category-dropdown">
+                        <button class="category-btn" onclick="toggleCreateCategoryDropdown()">
+                            <i class="fas fa-plus"></i> Создать категорию
+                        </button>
+                        <div class="dropdown-content" id="createCategoryDropdown">
+                            <div class="dropdown-header">Создать новую категорию</div>
+                            <div class="category-input-group">
+                                <input type="text" class="category-input" id="newCategoryName" placeholder="Название категории">
+                            </div>
+                            
+                            <!-- Секция назначения категории целям -->
+                            <div class="assign-goals-section" id="assignGoalsSection">
+                                <div class="assign-goals-title">Назначить категорию целям:</div>
+                                <div class="goals-to-assign" id="goalsToAssignList">
+                                    <!-- Список целей будет добавляться здесь -->
+                                </div>
+                            </div>
+                            
+                            <div class="dropdown-actions">
+                                <button class="dropdown-action-btn cancel-btn" onclick="closeCreateCategoryDropdown()">
+                                    Отмена
+                                </button>
+                                <button class="dropdown-action-btn create-btn" onclick="addNewCategory()">
+                                    Создать
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Кнопка назначения категорий -->
+                    <div class="assign-category-dropdown">
+                        <button class="category-btn" onclick="toggleAssignCategoryDropdown()">
+                            <i class="fas fa-tags"></i> Назначить категорию
+                        </button>
+                        <div class="assign-category-content" id="assignCategoryDropdown">
+                            <div class="dropdown-header">Назначить категорию целям</div>
+                            
+                            <div class="category-select-section">
+                                <label for="categorySelect">Выберите категорию:</label>
+                                <select class="category-select" id="categorySelect">
+                                    <!-- Категории будут добавляться здесь -->
+                                </select>
+                            </div>
+                            
+                            <div class="assign-goals-section">
+                                <div class="assign-goals-title">Выберите цели:</div>
+                                <div class="goals-to-assign" id="assignCategoryGoalsList">
+                                    <!-- Список целей будет добавляться здесь -->
+                                </div>
+                            </div>
+                            
+                            <button class="apply-category-btn" onclick="assignCategoryToGoals()">
+                                <i class="fas fa-check"></i> Применить категорию
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Кнопка категорий -->
+                    <div class="categories-dropdown">
+                        <button class="category-btn" onclick="toggleCategoriesDropdown()">
+                            <i class="fas fa-folder"></i> Категории
+                        </button>
+                        <div class="categories-dropdown-content" id="categoriesDropdown">
+                            <div class="dropdown-header">Выбор категорий</div>
+                            <div class="categories-list" id="categoriesList">
+                                <!-- Категории будут добавляться сюда -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Кнопка удаления категорий -->
+                    <div class="delete-category-dropdown">
+                        <button class="category-btn" onclick="toggleDeleteCategoryDropdown()">
+                            <i class="fas fa-trash"></i> Удалить категорию
+                        </button>
+                        <div class="delete-dropdown-content" id="deleteCategoryDropdown">
+                            <div class="dropdown-header">Удалить категории</div>
+                            <div class="delete-list" id="deleteCategoriesList">
+                                <!-- Категории для удаления будут добавляться сюда -->
+                            </div>
+                            <button class="delete-btn" onclick="deleteSelectedCategories()">
+                                <i class="fas fa-trash-alt"></i> Удалить выбранные
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2 class="section-title">Все цели</h2>
+            </div>
+            
+            <div class="goals-list" id="goalsListContainer">
+                <!-- Цели будут добавляться здесь -->
+            </div>
         </main>
     </div>
-    <div class="goaldialog">
-        <dialog id="new-goal-modal" class="goaldialog">
-            <!-- Содержимое сложного модального окна -->
-        </dialog>
-    </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/goals.js"></script>
+
+    <script>
+        // Инициализация Flatpickr для дедлайна
+        flatpickr("#goalDeadline", {
+            enableTime: true,
+            dateFormat: "d.m.Y H:i",
+            time_24hr: true,
+            locale: "ru"
+        });
+        
+        // Обработка слайдера важности
+        const importanceSlider = document.getElementById('importanceSlider');
+        const importanceValue = document.getElementById('importanceValue');
+        
+        importanceSlider.addEventListener('input', function() {
+            importanceValue.textContent = this.value;
+        });
+        
+        // Система советов
+        const tips = [
+            "Разбивайте большие цели на маленькие подзадачи. Так будет проще отслеживать прогресс!",
+            "Устанавливайте реалистичные сроки. Не пытайтесь сделать все за один день.",
+
+        ];
+        
+        let currentTipIndex = 0;
+        const tipElement = document.getElementById('currentTip');
+        const tipCounter = document.getElementById('tipCounter');
+        
+        function updateTip() {
+            tipElement.textContent = tips[currentTipIndex];
+            tipCounter.textContent = `${currentTipIndex + 1}/${tips.length}`;
+        }
+        
+        function nextTip() {
+            currentTipIndex = (currentTipIndex + 1) % tips.length;
+            updateTip();
+        }
+        
+        function prevTip() {
+            currentTipIndex = (currentTipIndex - 1 + tips.length) % tips.length;
+            updateTip();
+        }
+        
+        // Помощь ИИ в создании цели
+        function showAIHelp() {
+            const goalTitle = document.getElementById('goalTitle').value;
+            const goalDescription = document.getElementById('goalDescription').value;
+            
+            let message = "🤖 Помощь ИИ в создании цели\n\n";
+            
+            if (!goalTitle && !goalDescription) {
+                message += "Я могу помочь вам:\n1. Сформулировать четкую цель\n2. Разбить цель на этапы\n3. Предложить реалистичные сроки\n4. Дать рекомендации по достижению цели\n\nОпишите свою цель в полях выше, и я помогу её улучшить!";
+            } else {
+                message += "На основе вашего описания я рекомендую:\n\n";
+                
+                if (goalTitle) {
+                    message += `1. Цель "${goalTitle}" звучит хорошо!\n`;
+                }
+                
+                if (goalDescription) {
+                    message += `2. Описание достаточно подробное.\n`;
+                } else {
+                    message += `2. Добавьте подробное описание цели.\n`;
+                }
+                
+                message += `\nСоветы:\n• Разбейте цель на 3-5 подзадач\n• Установите промежуточные дедлайны\n• Отмечайте прогресс каждую неделю\n• Найдите напарника для поддержки`;
+            }
+            
+            alert(message);
+        }
+        
+        // Выпадающее меню для создания категории
+        function toggleCreateCategoryDropdown() {
+            const dropdown = document.getElementById('createCategoryDropdown');
+            const assignDropdown = document.getElementById('assignCategoryDropdown');
+            const categoriesDropdown = document.getElementById('categoriesDropdown');
+            const deleteDropdown = document.getElementById('deleteCategoryDropdown');
+            
+            dropdown.classList.toggle('show');
+            assignDropdown.classList.remove('show');
+            categoriesDropdown.classList.remove('show');
+            deleteDropdown.classList.remove('show');
+            
+            // Очищаем поле ввода при открытии
+            if (dropdown.classList.contains('show')) {
+                document.getElementById('newCategoryName').value = '';
+                updateGoalsToAssignList();
+            }
+        }
+        
+        function closeCreateCategoryDropdown() {
+            document.getElementById('createCategoryDropdown').classList.remove('show');
+        }
+        
+        // Выпадающее меню для назначения категорий
+        function toggleAssignCategoryDropdown() {
+            const dropdown = document.getElementById('assignCategoryDropdown');
+            const createDropdown = document.getElementById('createCategoryDropdown');
+            const categoriesDropdown = document.getElementById('categoriesDropdown');
+            const deleteDropdown = document.getElementById('deleteCategoryDropdown');
+            
+            dropdown.classList.toggle('show');
+            createDropdown.classList.remove('show');
+            categoriesDropdown.classList.remove('show');
+            deleteDropdown.classList.remove('show');
+            
+            // Обновляем списки при открытии
+            if (dropdown.classList.contains('show')) {
+                updateCategorySelect();
+                updateAssignCategoryGoalsList();
+            }
+        }
+        
+        // Выпадающее меню категорий
+        function toggleCategoriesDropdown() {
+            const dropdown = document.getElementById('categoriesDropdown');
+            const createDropdown = document.getElementById('createCategoryDropdown');
+            const assignDropdown = document.getElementById('assignCategoryDropdown');
+            const deleteDropdown = document.getElementById('deleteCategoryDropdown');
+            
+            dropdown.classList.toggle('show');
+            createDropdown.classList.remove('show');
+            assignDropdown.classList.remove('show');
+            deleteDropdown.classList.remove('show');
+            
+            // Обновляем список категорий при открытии
+            if (dropdown.classList.contains('show')) {
+                updateCategoriesList();
+            }
+        }
+        
+        // Выпадающее меню удаления категорий
+        function toggleDeleteCategoryDropdown() {
+            const dropdown = document.getElementById('deleteCategoryDropdown');
+            const createDropdown = document.getElementById('createCategoryDropdown');
+            const assignDropdown = document.getElementById('assignCategoryDropdown');
+            const categoriesDropdown = document.getElementById('categoriesDropdown');
+            
+            dropdown.classList.toggle('show');
+            createDropdown.classList.remove('show');
+            assignDropdown.classList.remove('show');
+            categoriesDropdown.classList.remove('show');
+            
+            // Обновляем список категорий для удаления при открытии
+            if (dropdown.classList.contains('show')) {
+                updateDeleteCategoriesList();
+            }
+        }
+        
+        // Закрытие выпадающих меню при клике вне их
+        document.addEventListener('click', function(event) {
+            const createDropdown = document.getElementById('createCategoryDropdown');
+            const assignDropdown = document.getElementById('assignCategoryDropdown');
+            const categoriesDropdown = document.getElementById('categoriesDropdown');
+            const deleteDropdown = document.getElementById('deleteCategoryDropdown');
+            const createBtn = document.querySelector('.create-category-dropdown .category-btn');
+            const assignBtn = document.querySelector('.assign-category-dropdown .category-btn');
+            const categoriesBtn = document.querySelector('.categories-dropdown .category-btn');
+            const deleteBtn = document.querySelector('.delete-category-dropdown .category-btn');
+            
+            if (!createDropdown.contains(event.target) && event.target !== createBtn) {
+                createDropdown.classList.remove('show');
+            }
+            
+            if (!assignDropdown.contains(event.target) && event.target !== assignBtn) {
+                assignDropdown.classList.remove('show');
+            }
+            
+            if (!categoriesDropdown.contains(event.target) && event.target !== categoriesBtn) {
+                categoriesDropdown.classList.remove('show');
+            }
+            
+            if (!deleteDropdown.contains(event.target) && event.target !== deleteBtn) {
+                deleteDropdown.classList.remove('show');
+            }
+        });
+        
+        // Массив категорий
+        let categories = [
+            { id: 1, name: "Учеба", selected: true },
+            { id: 2, name: "Работа", selected: true },
+            { id: 3, name: "Личное развитие", selected: true },
+            { id: 4, name: "Спорт", selected: true },
+            { id: 5, name: "Развлечения", selected: true },
+            { id: 6, name: "Другое", selected: true }
+        ];
+        
+        // Массив целей
+        let goals = [
+            { 
+                id: 1, 
+                title: "Поступить на юридический", 
+                description: "Я как Сол Гудман буду :)", 
+                deadline: "15.11.2025",
+                importance: 8,
+                progress: 69,
+                completed: false,
+                categoryId: 1
+            },
+            { 
+                id: 2, 
+                title: "Убить дракона в майнкрафте на хардкоре", 
+                description: "Добудь хотя бы 2 алмаза к следующей неделе, чел...", 
+                deadline: "20.11.2025",
+                importance: 5,
+                progress: 23,
+                completed: false,
+                categoryId: 5
+            },
+            { 
+                id: 3, 
+                title: "Купить шаверму на рынке", 
+                description: "Не побоятся и рискнуть, вот так и рождаются миллионеры", 
+                deadline: "01.12.2025",
+                importance: 3,
+                progress: 96,
+                completed: false,
+                categoryId: 6
+            }
+        ];
+        
+        // Обновление списка категорий
+        function updateCategoriesList() {
+            const categoriesList = document.getElementById('categoriesList');
+            categoriesList.innerHTML = '';
+            
+            if (categories.length === 0) {
+                categoriesList.innerHTML = '<div class="no-categories">Нет категорий</div>';
+                return;
+            }
+            
+            categories.forEach(category => {
+                const categoryElement = document.createElement('div');
+                categoryElement.className = 'dropdown-item';
+                categoryElement.innerHTML = `
+                    <input type="checkbox" id="cat-${category.id}" ${category.selected ? 'checked' : ''}>
+                    <label for="cat-${category.id}">${category.name}</label>
+                `;
+                
+                // Добавляем обработчик изменения чекбокса
+                const checkbox = categoryElement.querySelector('input');
+                checkbox.addEventListener('change', function() {
+                    category.selected = this.checked;
+                    filterGoalsByCategory();
+                });
+                
+                categoriesList.appendChild(categoryElement);
+            });
+        }
+        
+        // Обновление списка категорий для удаления
+        function updateDeleteCategoriesList() {
+            const deleteList = document.getElementById('deleteCategoriesList');
+            deleteList.innerHTML = '';
+            
+            if (categories.length === 0) {
+                deleteList.innerHTML = '<div class="no-categories">Нет категорий для удаления</div>';
+                return;
+            }
+            
+            categories.forEach(category => {
+                const categoryElement = document.createElement('div');
+                categoryElement.className = 'dropdown-item';
+                categoryElement.innerHTML = `
+                    <input type="checkbox" id="del-cat-${category.id}">
+                    <label for="del-cat-${category.id}">${category.name}</label>
+                `;
+                
+                deleteList.appendChild(categoryElement);
+            });
+        }
+        
+        // Обновление списка целей для назначения категории
+        function updateGoalsToAssignList() {
+            const goalsList = document.getElementById('goalsToAssignList');
+            const assignSection = document.getElementById('assignGoalsSection');
+            
+            if (goals.length === 0) {
+                goalsList.innerHTML = '<div class="no-goals-message">Нет целей для назначения категории</div>';
+                assignSection.style.display = 'none';
+                return;
+            }
+            
+            assignSection.style.display = 'block';
+            goalsList.innerHTML = '';
+            
+            goals.forEach(goal => {
+                const goalElement = document.createElement('div');
+                goalElement.className = 'goal-to-assign';
+                goalElement.innerHTML = `
+                    <input type="checkbox" id="assign-goal-${goal.id}">
+                    <label for="assign-goal-${goal.id}">${goal.title}</label>
+                `;
+                
+                goalsList.appendChild(goalElement);
+            });
+        }
+        
+        // Обновление выпадающего списка категорий
+        function updateCategorySelect() {
+            const categorySelect = document.getElementById('categorySelect');
+            categorySelect.innerHTML = '<option value="">Выберите категорию</option>';
+            
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                categorySelect.appendChild(option);
+            });
+        }
+        
+        // Обновление списка целей для назначения категории
+        function updateAssignCategoryGoalsList() {
+            const goalsList = document.getElementById('assignCategoryGoalsList');
+            
+            if (goals.length === 0) {
+                goalsList.innerHTML = '<div class="no-goals-message">Нет целей для назначения категории</div>';
+                return;
+            }
+            
+            goalsList.innerHTML = '';
+            
+            goals.forEach(goal => {
+                const category = categories.find(cat => cat.id === goal.categoryId);
+                const categoryName = category ? category.name : "Без категории";
+                
+                const goalElement = document.createElement('div');
+                goalElement.className = 'goal-to-assign';
+                goalElement.innerHTML = `
+                    <input type="checkbox" id="assign-cat-goal-${goal.id}">
+                    <label for="assign-cat-goal-${goal.id}">
+                        ${goal.title} 
+                        <small style="color: #666; margin-left: 0.5rem;">(${categoryName})</small>
+                    </label>
+                `;
+                
+                goalsList.appendChild(goalElement);
+            });
+        }
+        
+        // Добавление новой категории
+        function addNewCategory() {
+            const categoryNameInput = document.getElementById('newCategoryName');
+            const categoryName = categoryNameInput.value.trim();
+            
+            if (!categoryName) {
+                alert('Пожалуйста, введите название категории');
+                return;
+            }
+            
+            // Проверяем, нет ли уже такой категории
+            for (let i = 0; i < categories.length; i++) {
+                if (categories[i].name === categoryName) {
+                    alert('Категория с таким названием уже существует!');
+                    return;
+                }
+            }
+            
+            // Добавляем новую категорию
+            const newCategory = {
+                id: Date.now(),
+                name: categoryName,
+                selected: true
+            };
+            
+            categories.push(newCategory);
+            
+            // Назначаем категорию выбранным целям
+            const checkboxes = document.querySelectorAll('#goalsToAssignList .goal-to-assign input[type="checkbox"]:checked');
+            const selectedGoalIds = [];
+            
+            checkboxes.forEach(checkbox => {
+                const goalId = parseInt(checkbox.id.replace('assign-goal-', ''));
+                selectedGoalIds.push(goalId);
+            });
+            
+            if (selectedGoalIds.length > 0) {
+                goals.forEach(goal => {
+                    if (selectedGoalIds.includes(goal.id)) {
+                        goal.categoryId = newCategory.id;
+                    }
+                });
+                
+                renderGoals(); // Обновляем отображение целей
+            }
+            
+            // Очищаем поле ввода и закрываем меню
+            categoryNameInput.value = '';
+            closeCreateCategoryDropdown();
+            
+            // Обновляем все списки
+            updateCategoriesList();
+            updateDeleteCategoriesList();
+            updateCategorySelect();
+            
+            // Показываем уведомление
+            const message = selectedGoalIds.length > 0 
+                ? `Категория "${categoryName}" успешно создана и назначена ${selectedGoalIds.length} целям!`
+                : `Категория "${categoryName}" успешно создана!`;
+            alert(message);
+        }
+        
+        // Назначение категории выбранным целям
+        function assignCategoryToGoals() {
+            const categorySelect = document.getElementById('categorySelect');
+            const selectedCategoryId = parseInt(categorySelect.value);
+            
+            if (!selectedCategoryId) {
+                alert('Пожалуйста, выберите категорию');
+                return;
+            }
+            
+            const checkboxes = document.querySelectorAll('#assignCategoryGoalsList .goal-to-assign input[type="checkbox"]:checked');
+            const selectedGoalIds = [];
+            
+            checkboxes.forEach(checkbox => {
+                const goalId = parseInt(checkbox.id.replace('assign-cat-goal-', ''));
+                selectedGoalIds.push(goalId);
+            });
+            
+            if (selectedGoalIds.length === 0) {
+                alert('Выберите цели для назначения категории');
+                return;
+            }
+            
+            const selectedCategory = categories.find(cat => cat.id === selectedCategoryId);
+            
+            // Назначаем категорию выбранным целям
+            goals.forEach(goal => {
+                if (selectedGoalIds.includes(goal.id)) {
+                    goal.categoryId = selectedCategoryId;
+                }
+            });
+            
+            // Закрываем меню
+            document.getElementById('assignCategoryDropdown').classList.remove('show');
+            
+            // Обновляем отображение целей
+            renderGoals();
+            
+            // Показываем уведомление
+            alert(`Категория "${selectedCategory.name}" назначена ${selectedGoalIds.length} целям!`);
+        }
+        
+        // Удаление выбранных категорий
+        function deleteSelectedCategories() {
+            const checkboxes = document.querySelectorAll('#deleteCategoriesList .dropdown-item input[type="checkbox"]:checked');
+            const categoriesToDelete = [];
+            const indicesToDelete = [];
+            const categoryIdsToDelete = [];
+            
+            checkboxes.forEach(checkbox => {
+                const id = parseInt(checkbox.id.replace('del-cat-', ''));
+                const index = categories.findIndex(cat => cat.id === id);
+                if (index !== -1) {
+                    categoriesToDelete.push(categories[index].name);
+                    indicesToDelete.push(index);
+                    categoryIdsToDelete.push(id);
+                }
+            });
+            
+            if (categoriesToDelete.length === 0) {
+                alert('Выберите категории для удаления');
+                return;
+            }
+            
+            if (confirm(`Вы уверены, что хотите удалить следующие категории?\n\n${categoriesToDelete.join('\n')}\n\nЦели с этими категориями будут переведены в категорию "Другое".`)) {
+                // Находим или создаем категорию "Другое"
+                let otherCategory = categories.find(cat => cat.name === "Другое");
+                if (!otherCategory) {
+                    otherCategory = { id: Date.now(), name: "Другое", selected: true };
+                    categories.push(otherCategory);
+                }
+                
+                // Переводим цели в категорию "Другое"
+                goals.forEach(goal => {
+                    if (categoryIdsToDelete.includes(goal.categoryId)) {
+                        goal.categoryId = otherCategory.id;
+                    }
+                });
+                
+                // Удаляем категории в обратном порядке, чтобы индексы не сбивались
+                indicesToDelete.sort((a, b) => b - a);
+                indicesToDelete.forEach(index => {
+                    categories.splice(index, 1);
+                });
+                
+                // Закрываем меню удаления
+                document.getElementById('deleteCategoryDropdown').classList.remove('show');
+                
+                // Обновляем все списки
+                updateCategoriesList();
+                updateDeleteCategoriesList();
+                updateCategorySelect();
+                renderGoals();
+                
+                alert('Выбранные категории удалены! Цели переведены в категорию "Другое".');
+            }
+        }
+        
+        // Фильтрация целей по категориям
+        function filterGoalsByCategory() {
+            const selectedCategories = categories.filter(cat => cat.selected).map(cat => cat.id);
+            const allGoalsBtn = document.getElementById('allGoalsBtn');
+            
+            if (selectedCategories.length === categories.length) {
+                allGoalsBtn.classList.add('active');
+                renderGoals(); // Показываем все цели
+            } else {
+                allGoalsBtn.classList.remove('active');
+                // Фильтруем цели
+                const filteredGoals = goals.filter(goal => selectedCategories.includes(goal.categoryId));
+                renderGoals(filteredGoals);
+            }
+        }
+        
+        // Назначение категории отдельной цели (при клике на иконку)
+        function assignCategoryToSingleGoal(goalId) {
+            // Находим цель
+            const goal = goals.find(g => g.id === goalId);
+            if (!goal) return;
+            
+            // Создаем модальное окно для выбора категории
+            let categoryOptions = '';
+            categories.forEach(category => {
+                const isSelected = category.id === goal.categoryId;
+                categoryOptions += `<option value="${category.id}" ${isSelected ? 'selected' : ''}>${category.name}</option>`;
+            });
+            
+            const modalHtml = `
+                <div style="padding: 1rem;">
+                    <h3 style="margin-top: 0;">Назначить категорию цели</h3>
+                    <p><strong>${goal.title}</strong></p>
+                    <select id="singleGoalCategorySelect" style="width: 100%; padding: 0.5rem; margin: 1rem 0; border: 1px solid #ddd; border-radius: 5px;">
+                        ${categoryOptions}
+                    </select>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button onclick="closeSingleGoalModal()" style="flex: 1; padding: 0.5rem; background: #f0f0f0; border: none; border-radius: 5px; cursor: pointer;">Отмена</button>
+                        <button onclick="applyCategoryToSingleGoal(${goalId})" style="flex: 1; padding: 0.5rem; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Применить</button>
+                    </div>
+                </div>
+            `;
+            
+            // Показываем модальное окно
+            const modal = document.createElement('div');
+            modal.id = 'singleGoalModal';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '1000';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.backgroundColor = 'white';
+            modalContent.style.borderRadius = '10px';
+            modalContent.style.maxWidth = '400px';
+            modalContent.style.width = '90%';
+            modalContent.innerHTML = modalHtml;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+        }
+        
+        function applyCategoryToSingleGoal(goalId) {
+            const select = document.getElementById('singleGoalCategorySelect');
+            const categoryId = parseInt(select.value);
+            
+            const goal = goals.find(g => g.id === goalId);
+            if (goal && categoryId) {
+                goal.categoryId = categoryId;
+                renderGoals();
+                closeSingleGoalModal();
+                alert('Категория назначена цели!');
+            }
+        }
+        
+        function closeSingleGoalModal() {
+            const modal = document.getElementById('singleGoalModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        // Отрисовка целей
+        function renderGoals(goalsToRender = goals) {
+            const goalsListContainer = document.getElementById('goalsListContainer');
+            goalsListContainer.innerHTML = '';
+            
+            if (goalsToRender.length === 0) {
+                goalsListContainer.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">Цели не найдены</div>';
+                return;
+            }
+            
+            goalsToRender.forEach(goal => {
+                const category = categories.find(cat => cat.id === goal.categoryId);
+                const categoryName = category ? category.name : "Без категории";
+                const categoryColor = category ? getCategoryColor(category.id) : "#999";
+                
+                const goalElement = document.createElement('div');
+                goalElement.className = 'goal-item';
+                goalElement.innerHTML = `
+                    <div class="goal-header">
+                        <div>
+                            <h3>${goal.title}</h3>
+                            <span class="goal-category" onclick="assignCategoryToSingleGoal(${goal.id})" style="background-color: ${categoryColor}20; color: ${categoryColor};">
+                                ${categoryName}
+                                <i class="fas fa-pencil-alt" style="margin-left: 0.3rem; font-size: 0.7rem;"></i>
+                            </span>
+                        </div>
+                        <div class="goal-actions">
+                            <button class="assign-category-icon" onclick="assignCategoryToSingleGoal(${goal.id})" title="Назначить категорию">
+                                <i class="fas fa-tag"></i>
+                            </button>
+                            <div class="goal-deadline">
+                                <span>${goal.deadline}</span>
+                                <input type="checkbox" ${goal.completed ? 'checked' : ''}>
+                            </div>
+                        </div>
+                    </div>
+                    <p>${goal.description}</p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${goal.progress}%;"></div>
+                    </div>
+                `;
+                
+                // Добавляем обработчик для чекбокса
+                const checkbox = goalElement.querySelector('input[type="checkbox"]');
+                checkbox.addEventListener('change', function() {
+                    goal.completed = this.checked;
+                    goalElement.style.opacity = goal.completed ? '0.6' : '1';
+                    goalElement.querySelector('.progress-bar').style.width = goal.completed ? '100%' : `${goal.progress}%`;
+                });
+                
+                goalsListContainer.appendChild(goalElement);
+            });
+        }
+        
+        // Получение цвета для категории
+        function getCategoryColor(categoryId) {
+            const colors = [
+                "#2196F3", // Учеба - синий
+                "#4CAF50", // Работа - зеленый
+                "#9C27B0", // Личное развитие - фиолетовый
+                "#FF9800", // Спорт - оранжевый
+                "#F44336", // Развлечения - красный
+                "#607D8B"  // Другое - серый
+            ];
+            
+            const categoryIndex = categories.findIndex(cat => cat.id === categoryId);
+            return colors[categoryIndex % colors.length] || "#607D8B";
+        }
+        
+        // Функция очистки формы
+        function clearForm() {
+            document.getElementById('goalTitle').value = '';
+            document.getElementById('goalDescription').value = '';
+            document.getElementById('goalDeadline').value = '';
+            document.getElementById('importanceSlider').value = '5';
+            importanceValue.textContent = '5';
+        }
+        
+        // Функция сохранения цели
+        function saveGoal() {
+            const title = document.getElementById('goalTitle').value.trim();
+            const description = document.getElementById('goalDescription').value.trim();
+            const deadline = document.getElementById('goalDeadline').value;
+            const importance = document.getElementById('importanceSlider').value;
+            
+            if (!title) {
+                alert('Пожалуйста, введите название цели');
+                return;
+            }
+            
+            // Форматирование даты
+            let deadlineText = 'Без срока';
+            if (deadline) {
+                const deadlineDate = new Date(deadline);
+                deadlineText = deadlineDate.toLocaleDateString('ru-RU');
+            }
+            
+            // Создание объекта цели
+            const newGoal = {
+                id: Date.now(),
+                title: title,
+                description: description || 'Без описания',
+                importance: parseInt(importance),
+                deadline: deadlineText,
+                progress: 0,
+                completed: false,
+                categoryId: 6 // По умолчанию категория "Другое"
+            };
+            
+            // Добавляем цель в массив
+            goals.unshift(newGoal); // Добавляем в начало
+            
+            // Обновляем все списки
+            updateGoalsToAssignList();
+            updateAssignCategoryGoalsList();
+            
+            // Обновляем отображение
+            renderGoals();
+            
+            // Показ уведомления
+            alert('✅ Цель успешно создана!\n\nНазвание: ' + title + '\nВажность: ' + importance + '/10');
+            
+            // Очищаем форму после сохранения
+            clearForm();
+        }
+        
+        // Кнопка "Все цели"
+        document.getElementById('allGoalsBtn').addEventListener('click', function() {
+            // Сбрасываем все чекбоксы категорий
+            categories.forEach(cat => cat.selected = true);
+            updateCategoriesList();
+            this.classList.add('active');
+            renderGoals();
+        });
+        
+        // Управление темой
+        const themeButtons = document.querySelectorAll('[data-set-theme]');
+        const storageKey = 'studyflow-theme';
+        
+        const applyTheme = (theme) => {
+            document.body.setAttribute('data-theme', theme === 'default' ? '' : theme);
+        };
+        
+        themeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const theme = button.dataset.setTheme;
+                applyTheme(theme);
+                localStorage.setItem(storageKey, theme);
+            });
+        });
+        
+        // Мобильное меню и инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem(storageKey);
+            if (savedTheme) applyTheme(savedTheme);
+            
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const sidebar = document.querySelector('.sidebar');
+            if (mobileMenuBtn && sidebar) {
+                mobileMenuBtn.addEventListener('click', () => sidebar.classList.toggle('active'));
+                document.addEventListener('click', (e) => {
+                    if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Инициализация первого совета
+            updateTip();
+            
+            // Инициализация всех списков
+            updateCategoriesList();
+            updateDeleteCategoriesList();
+            updateCategorySelect();
+            updateGoalsToAssignList();
+            updateAssignCategoryGoalsList();
+            
+            renderGoals();//?
+        });
+    </script>
 </body>
 </html>
+
